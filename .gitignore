@@ -1,0 +1,14 @@
+# Chặn folder rác biên dịch của CMake
+cmake-build-debug/
+cmake-build-release/
+build/
+
+# Chặn folder cấu hình cá nhân của CLion
+.idea/
+*.cmake
+
+# Chặn các file chạy nhị phân cục bộ
+Polaris
+*.o
+*.a
+*.so
