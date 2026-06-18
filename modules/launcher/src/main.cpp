@@ -1,7 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QDirIterator>
-#include <QDebug>
+
 
 using namespace Qt::StringLiterals;
 
