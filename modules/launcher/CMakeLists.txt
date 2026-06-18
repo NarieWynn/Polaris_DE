@@ -5,26 +5,24 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-if(POLICY QTP0001)
-    cmake_policy(SET QTP0001 NEW)
-endif()
-if(POLICY QTP0004)
-    cmake_policy(SET QTP0004 NEW)
-endif()
-
 find_package(Qt6 COMPONENTS Core Gui Qml Quick REQUIRED)
 
-add_executable(polaris_launcher
-        src/main.cpp
-)
+qt_policy(SET QTP0001 NEW)
+qt_policy(SET QTP0004 NEW)
 
+qt_add_executable(polaris_launcher
+        src/main.cpp
+        src/appmodel.cpp
+        src/appmodel.h
+)
 
 qt_add_qml_module(polaris_launcher
         URI polaris
         VERSION 1.0
         QML_FILES
         qml/main.qml
-        qml/AppLauncher.qml
+        qml/components/AppLauncher.qml
+        qml/components/SearchBar.qml
 )
 
 target_link_libraries(polaris_launcher PRIVATE
