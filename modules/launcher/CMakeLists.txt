@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt6 COMPONENTS Core Gui Qml Quick REQUIRED)
+find_package(Qt6 COMPONENTS Core Gui Qml Quick Sql REQUIRED)
 
 qt_policy(SET QTP0001 NEW)
 qt_policy(SET QTP0004 NEW)
@@ -30,4 +30,5 @@ target_link_libraries(polaris_launcher PRIVATE
         Qt6::Gui
         Qt6::Qml
         Qt6::Quick
+        Qt6::Sql
 )

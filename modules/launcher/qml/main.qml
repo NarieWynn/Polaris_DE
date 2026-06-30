@@ -1,6 +1,6 @@
 import QtQuick
 import QtQuick.Controls
-
+import "components"
 Window {
     id: root
     width: 500
@@ -8,4 +8,14 @@ Window {
     visible: true
     title: "Launcher"
     color: "#1e1e2e"
+
+    SearchBar {
+        id: searchInput
+        width: parent.width
+    }
+    AppLauncher {
+        anchors.top: searchInput.bottom
+        width: parent.width
+        height: 300
+    }
 }

@@ -1,5 +1,15 @@
 import QtQuick
 
 Item {
-    // Đây là file giao diện phụ cho Launcher, tạm thời để trống để test hệ thống trước
+    id: root
+
+    ListView {
+        anchors.fill: parent
+        model: appModel
+        delegate: Text {
+            text: name
+            color: "white"
+            font.pixelSize: 18
+        }
+    }
 }
