@@ -12,7 +12,8 @@ qt_policy(SET QTP0004 NEW)
 
 qt_add_executable(polaris_taskbar
         src/main.cpp
-
+        src/clock.h
+        src/clock.cpp
 )
 
 qt_add_qml_module(polaris_taskbar
@@ -20,6 +21,7 @@ qt_add_qml_module(polaris_taskbar
         VERSION 1.0
         QML_FILES
         qml/main.qml
+        qml/components/Clock.qml
 )
 
 target_link_libraries(polaris_taskbar PRIVATE

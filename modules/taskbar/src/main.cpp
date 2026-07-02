@@ -1,6 +1,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include <QSettings>
+#include "clock.h"
+#include <QQmlContext>
 
 using namespace Qt::StringLiterals;
 
@@ -16,6 +17,8 @@ int main(int argc, char *argv[]) {
 
     const QUrl url(u"qrc:/qt/qml/polaris/qml/main.qml"_s);
 
+    Clock clock;
+    engine.rootContext()->setContextProperty("sysClock", &clock);
 
 
     engine.load(url);

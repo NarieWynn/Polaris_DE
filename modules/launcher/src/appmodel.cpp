@@ -15,8 +15,7 @@ void AppModel::launchApp(const QString &exec)
     cleanExec = cleanExec.trimmed();
     QProcess::startDetached("/bin/sh", {"-c", cleanExec});
 }
-AppModel::AppModel(QObject *parent)
-    : QAbstractListModel(parent)
+AppModel::AppModel(QObject *parent):QAbstractListModel(parent)
 {
     loadApps();
 }
