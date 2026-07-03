@@ -10,8 +10,8 @@ class BatteryManager : public QObject {
 public:
     explicit BatteryManager(QObject *parent = nullptr);
 
-    int batteryLevel() const;
-    bool isCharging() const;
+    [[nodiscard]] int batteryLevel() const;
+    [[nodiscard]] bool isCharging() const;
 
     signals:
         void batteryChanged();

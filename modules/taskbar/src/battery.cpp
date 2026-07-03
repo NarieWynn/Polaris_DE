@@ -30,7 +30,7 @@ void BatteryManager::updateBatteryStatus() {
     }
 
 
-    QString batName = batteries.first();
+    const QString &batName = batteries.first();
     QString basePath = "/sys/class/power_supply/" + batName + "/";
 
     int newLevel = m_batteryLevel;
