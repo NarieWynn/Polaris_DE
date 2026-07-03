@@ -1,29 +1,49 @@
+#include <LayerShellQt/shell.h>
+#include <LayerShellQt/window.h>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
-#include "clock.h"
 #include <QQmlContext>
+#include <QQuickWindow>
+#include "clock.h"
 #include "battery.h"
+#include <QSize>
 using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[]) {
-
 #ifdef HAS_VULKAN
     qputenv("QSG_RHI_BACKEND", "vulkan");
 #endif
 
+    QQuickWindow::setDefaultAlphaBuffer(true);
     QGuiApplication app(argc, argv);
-
     QQmlApplicationEngine engine;
-
-    const QUrl url(u"qrc:/qt/qml/polaris/qml/main.qml"_s);
 
     Clock clock;
     engine.rootContext()->setContextProperty("sysClock", &clock);
 
-    BatteryManager manager;
-    engine.rootContext()->setContextProperty("sysBattery", &manager);
+    BatteryManager battery;
+    engine.rootContext()->setContextProperty("sysBattery", &battery);
 
+    const QUrl url(u"qrc:/qt/qml/polaris/qml/main.qml"_s);
     engine.load(url);
+
+    if (!engine.rootObjects().isEmpty()) {
+        auto *window = qobject_cast<QQuickWindow*>(engine.rootObjects().first());
+        if (window) {
+            auto *layerWindow = LayerShellQt::Window::get(window);
+            layerWindow->setLayer(LayerShellQt::Window::LayerTop);
+            layerWindow->setAnchors(
+                LayerShellQt::Window::Anchors(
+                    LayerShellQt::Window::AnchorTop |
+                    LayerShellQt::Window::AnchorLeft |
+                    LayerShellQt::Window::AnchorRight
+                )
+            );
+            layerWindow->setExclusiveZone(30);
+            layerWindow->setDesiredSize(QSize(0, 30));
+            window->show();
+        }
+    }
 
     return QGuiApplication::exec();
 }

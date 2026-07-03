@@ -6,15 +6,18 @@ Window {
     id: root
     width: Screen.width
     height: 30
-    visible: true
+    visible: false
     title: "taskbar"
-    color: "#1e1e2e"
+    color: "transparent"
+
+    Rectangle {
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, 0.5)  // thêm nền tạm để thấy rõ size
+    }
 
     Row {
         id: rightSystemTray
         spacing: 16
-
-
         anchors.right: parent.right
         anchors.rightMargin: 16
         anchors.verticalCenter: parent.verticalCenter

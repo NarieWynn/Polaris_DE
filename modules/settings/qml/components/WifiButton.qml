@@ -8,13 +8,14 @@ Item {
         id: background
         anchors.fill: parent
         radius: 16
-        color: Qt.rgba(1, 1, 1, 0.08)
-        border.color: Qt.rgba(1, 1, 1, 0.15)
+        color: Qt.rgba(1, 1, 1, 0.3)        // sáng hơn, 30% trắng
+        border.color: Qt.rgba(1, 1, 1, 0.6)
         border.width: 1
+
         layer.enabled: true
         layer.effect: MultiEffect {
             blurEnabled: true
-            blur: 0.4
+            blur: 0.6
             blurMax: 32
         }
     }
@@ -28,7 +29,7 @@ Item {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: "Wi-Fi"
-            color: "white"
+            color: "#333333"  // chữ tối trên nền sáng
             font.pixelSize: 15
         }
     }
