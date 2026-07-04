@@ -26,12 +26,15 @@ int main(int argc, char *argv[]) {
             layerWindow->setLayer(LayerShellQt::Window::LayerTop);
             layerWindow->setAnchors(
                 LayerShellQt::Window::Anchors(
-                    LayerShellQt::Window::AnchorBottom |
+                    LayerShellQt::Window::AnchorTop |
                     LayerShellQt::Window::AnchorRight
                 )
             );
+            layerWindow->setMargins(QMargins(0, 30, 0, 0));
             layerWindow->setExclusiveZone(-1); // không đẩy window khác
             layerWindow->setDesiredSize(QSize(240, 300));
+            layerWindow->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityOnDemand);
+            layerWindow->setCloseOnDismissed(true);
             window->show();
         }
     }

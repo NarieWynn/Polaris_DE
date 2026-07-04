@@ -9,7 +9,6 @@ Window {
     visible: false
     title: "wifi_popup"
     color: "transparent"
-    //flags: Qt.Popup
 
     Rectangle {
         anchors.fill: parent
@@ -23,7 +22,9 @@ Window {
             anchors.margins: 8
         }
     }
-    onActiveChanged: {
-       if (!active) Qt.quit()
+
+    Shortcut {
+        sequence: "Escape"
+        onActivated: Qt.quit()
     }
 }
