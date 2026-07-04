@@ -30,6 +30,30 @@ Window {
             }
         }
     }
+    //mid system tray
+    Rectangle {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.verticalCenter: parent.verticalCenter
+
+        height: 33
+        width: midSystemTray.childrenRect.width + 16
+        radius: 14
+        color: Qt.rgba(0, 0, 0, 0.6)
+
+        Row {
+            id: midSystemTray
+            anchors.centerIn: parent
+            spacing: 8
+
+            Clock {
+                id: clockWidget
+                height: 26
+            }
+
+
+        }
+    }
+
     Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 4
@@ -50,17 +74,6 @@ Window {
                 id: wifiWidget
                 height: 26
             }
-
-            Clock {
-                id: clockWidget
-                height: 26
-            }
-
-            DateDisplay {
-                id: dateWidget
-                height: 26
-            }
-
             Battery {
                 id: batteryWidget
                 height: 26

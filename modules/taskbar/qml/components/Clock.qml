@@ -7,10 +7,19 @@ Rectangle {
     color: Qt.rgba(0.71, 0.91, 0.69, 0.7)
     radius: 10
 
-    Column {
+    Row {
         id: clockColumn
-
+        spacing: 4
         anchors.centerIn: parent
+
+        Text {
+            id: dateTextDisplay
+            text: sysClock.dateText
+            color: "#2d5a27"
+            font.bold: true
+            font.pixelSize: 12
+            anchors.verticalCenter: parent.verticalCenter
+        }
 
         Text {
             id: timeTextDisplay
@@ -18,7 +27,7 @@ Rectangle {
             color: "#2d5a27"
             font.pixelSize: 12
             font.bold: true
-            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
         }
     }
 }

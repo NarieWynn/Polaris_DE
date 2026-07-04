@@ -1,4 +1,5 @@
-
+//THIS FILE IS NOT USED RECENTLY
+//BE ABLE TO DELETED
 import QtQuick
 
 Rectangle {
