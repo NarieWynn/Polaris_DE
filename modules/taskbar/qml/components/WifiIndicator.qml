@@ -17,16 +17,16 @@ Rectangle {
             font.pixelSize: 25
             color: "#2d5a27"
             font.bold: true
-            text: "󰖩"
             anchors.verticalCenter: parent.verticalCenter
+            text: sysWifi.isConnected ? "󰖩" : "󰖪"
         }
 
         Text {
             font.pixelSize: 12
             font.bold: true
             color: "#2d5a27"
-            text: "NGUYEN"
             anchors.verticalCenter: parent.verticalCenter
+            text: sysWifi.isConnected ? sysWifi.ssid : "No WiFi"
         }
     }
 }

@@ -7,6 +7,7 @@
 #include "battery.h"
 #include <QSize>
 #include "workspace.h"
+#include "wifi.h"
 using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[]) {
@@ -26,6 +27,9 @@ int main(int argc, char *argv[]) {
 
     WorkspaceManager workspace;
     engine.rootContext()->setContextProperty("sysWorkspace", &workspace);
+
+    WifiManager wifi;
+    engine.rootContext()->setContextProperty("sysWifi", &wifi);
 
     const QUrl url(u"qrc:/qt/qml/polaris/qml/main.qml"_s);
     engine.load(url);
