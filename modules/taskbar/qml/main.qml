@@ -5,25 +5,25 @@ import "components"
 Window {
     id: root
     width: Screen.width
-    height: 30
+    height: 25
     visible: false
     title: "taskbar"
     color: "transparent"
 
+    //left system tray
     Rectangle {
         anchors.left: parent.left
-        anchors.leftMargin: 4
+        anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter
-        height: 33
-        width: leftSystemTray.width + 8
-        radius: 14
+
+        height: 25
+        width: leftSystemTray.childrenRect.width + 16
+        radius: 10
         color: Qt.rgba(0, 0, 0, 0.6)
-        //left
+
         Row {
             id: leftSystemTray
             anchors.centerIn: parent
-            anchors.leftMargin: 8
-            anchors.verticalCenter: parent.verticalCenter
 
             WorkspaceIndicator {
                 anchors.verticalCenter: parent.verticalCenter
@@ -35,9 +35,9 @@ Window {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
 
-        height: 33
+        height: 25
         width: midSystemTray.childrenRect.width + 16
-        radius: 14
+        radius: 10
         color: Qt.rgba(0, 0, 0, 0.6)
 
         Row {
@@ -47,36 +47,33 @@ Window {
 
             Clock {
                 id: clockWidget
-                height: 26
+                height: 23
             }
-
-
         }
     }
-
+    //right system tray
     Rectangle {
         anchors.right: parent.right
-        anchors.rightMargin: 4
+        anchors.rightMargin: 8
         anchors.verticalCenter: parent.verticalCenter
-        height: 33
-        width: rightSystemTray.width + 8
-        radius: 14
+
+        height: 25
+        width: rightSystemTray.childrenRect.width + 16
+        radius: 10
         color: Qt.rgba(0, 0, 0, 0.6)
-        //right
+
         Row {
             id: rightSystemTray
-            spacing: 4
+            spacing: 8
             anchors.centerIn: parent
-            anchors.rightMargin: 4
-            anchors.verticalCenter: parent.verticalCenter
 
             WifiIndicator {
                 id: wifiWidget
-                height: 26
+                height: 23
             }
             Battery {
                 id: batteryWidget
-                height: 26
+                height: 23
             }
         }
     }
