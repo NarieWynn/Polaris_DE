@@ -16,6 +16,8 @@ qt_add_executable(polaris_taskbar
         src/clock.cpp
         src/battery.h
         src/battery.cpp
+        src/workspace.h
+        src/workspace.cpp
 )
 
 qt_add_qml_module(polaris_taskbar

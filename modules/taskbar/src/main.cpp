@@ -1,4 +1,3 @@
-#include <LayerShellQt/shell.h>
 #include <LayerShellQt/window.h>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
@@ -7,6 +6,7 @@
 #include "clock.h"
 #include "battery.h"
 #include <QSize>
+#include "workspace.h"
 using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[]) {
@@ -23,6 +23,9 @@ int main(int argc, char *argv[]) {
 
     BatteryManager battery;
     engine.rootContext()->setContextProperty("sysBattery", &battery);
+
+    WorkspaceManager workspace;
+    engine.rootContext()->setContextProperty("sysWorkspace", &workspace);
 
     const QUrl url(u"qrc:/qt/qml/polaris/qml/main.qml"_s);
     engine.load(url);
