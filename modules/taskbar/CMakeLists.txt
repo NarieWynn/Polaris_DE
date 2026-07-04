@@ -25,6 +25,7 @@ qt_add_qml_module(polaris_taskbar
         qml/main.qml
         qml/components/Clock.qml
         qml/components/Battery.qml
+        qml/components/DateDisplay.qml
 )
 
 target_link_libraries(polaris_taskbar PRIVATE

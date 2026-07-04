@@ -10,26 +10,27 @@ Window {
     title: "taskbar"
     color: "transparent"
 
-    Rectangle {
-        anchors.fill: parent
-        color: Qt.rgba(0, 0, 0, 0.5)  // thêm nền tạm để thấy rõ size
-    }
+
 
     Row {
         id: rightSystemTray
-        spacing: 16
+        spacing: 4
         anchors.right: parent.right
-        anchors.rightMargin: 16
+        anchors.rightMargin: 4
         anchors.verticalCenter: parent.verticalCenter
 
         Clock {
             id: clockWidget
-            anchors.verticalCenter: parent.verticalCenter
+            height: 26
         }
 
+        DateDisplay{
+            id: dateWidget
+            height: 26
+        }
         Battery {
             id: batteryWidget
-            anchors.verticalCenter: parent.verticalCenter
+            height: 26
         }
     }
 }
