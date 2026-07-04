@@ -4,7 +4,7 @@ Rectangle {
     id: root
     width: batteryRow.width + 16
     height: parent ? parent.height : 0
-    color: "#b5e8b0"
+    color: Qt.rgba(0.71, 0.91, 0.69, 0.7)
     radius: 10
 
     Row {
