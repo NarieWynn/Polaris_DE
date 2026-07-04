@@ -38,6 +38,13 @@ void WifiManager::updateWifi() {
 
     emit wifiChanged();
 }
+void WifiManager::openPopup() {
+    qDebug() << "openPopup called";
+    QProcess::startDetached(
+        "/home/nariewynn/Projects/Polaris/cmake-build-debug/modules/wifi_popup/polaris_wifi_popup",
+        {}
+    );
+}
 
 QString WifiManager::ssid() const { return m_ssid; }
 int WifiManager::signalStrength() const { return m_signalStrength; }

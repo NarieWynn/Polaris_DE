@@ -18,8 +18,8 @@ qt_add_executable(polaris_taskbar
         src/battery.cpp
         src/workspace.h
         src/workspace.cpp
-        src/wifi.h
-        src/wifi.cpp
+        ../../shared/network/wifi.h
+        ../../shared/network/wifi.cpp
 )
 
 qt_add_qml_module(polaris_taskbar
@@ -41,4 +41,5 @@ target_link_libraries(polaris_taskbar PRIVATE
         Qt6::Quick
         Qt6::DBus
         LayerShellQt::Interface
+        polaris_shared
 )

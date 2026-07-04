@@ -1,32 +1,17 @@
+#include <LayerShellQt/shell.h>
 #include <LayerShellQt/window.h>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickWindow>
-#include "clock.h"
-#include "battery.h"
-#include <QSize>
-#include "workspace.h"
 #include <wifi.h>
+
 using namespace Qt::StringLiterals;
 
 int main(int argc, char *argv[]) {
-#ifdef HAS_VULKAN
-    qputenv("QSG_RHI_BACKEND", "vulkan");
-#endif
-
     QQuickWindow::setDefaultAlphaBuffer(true);
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine engine;
-
-    Clock clock;
-    engine.rootContext()->setContextProperty("sysClock", &clock);
-
-    BatteryManager battery;
-    engine.rootContext()->setContextProperty("sysBattery", &battery);
-
-    WorkspaceManager workspace;
-    engine.rootContext()->setContextProperty("sysWorkspace", &workspace);
 
     WifiManager wifi;
     engine.rootContext()->setContextProperty("sysWifi", &wifi);
@@ -41,13 +26,12 @@ int main(int argc, char *argv[]) {
             layerWindow->setLayer(LayerShellQt::Window::LayerTop);
             layerWindow->setAnchors(
                 LayerShellQt::Window::Anchors(
-                    LayerShellQt::Window::AnchorTop |
-                    LayerShellQt::Window::AnchorLeft |
+                    LayerShellQt::Window::AnchorBottom |
                     LayerShellQt::Window::AnchorRight
                 )
             );
-            layerWindow->setExclusiveZone(30);
-            layerWindow->setDesiredSize(QSize(0, 30));
+            layerWindow->setExclusiveZone(-1); // không đẩy window khác
+            layerWindow->setDesiredSize(QSize(240, 300));
             window->show();
         }
     }

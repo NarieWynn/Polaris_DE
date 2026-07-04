@@ -29,4 +29,8 @@ Rectangle {
             text: sysWifi.isConnected ? sysWifi.ssid : "No WiFi"
         }
     }
+    MouseArea {
+        anchors.fill: parent
+        onClicked: sysWifi.openPopup()
+    }
 }

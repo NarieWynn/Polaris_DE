@@ -7,12 +7,12 @@ class WifiManager : public QObject {
     Q_PROPERTY(QString ssid READ ssid NOTIFY wifiChanged)
     Q_PROPERTY(int signalStrength READ signalStrength NOTIFY wifiChanged)
     Q_PROPERTY(bool isConnected READ isConnected NOTIFY wifiChanged)
-
 public:
     explicit WifiManager(QObject *parent = nullptr);
-    QString ssid() const;
-    int signalStrength() const;
-    bool isConnected() const;
+    Q_INVOKABLE void openPopup();
+    [[nodiscard]] QString ssid() const;
+    [[nodiscard]] int signalStrength() const;
+    [[nodiscard]] bool isConnected() const;
 
     signals:
         void wifiChanged();
