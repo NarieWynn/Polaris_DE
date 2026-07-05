@@ -1,7 +1,7 @@
- #ifndef CALENDAR_H
+#ifndef CALENDAR_H
 #define CALENDAR_H
-#include <QObject>
-#include <QVariantList>
+//#include <QObject>
+//#include <QVariantList>
 #include <QDate>
 
 class CalendarManager : public QObject {
@@ -23,7 +23,7 @@ public:
     Q_INVOKABLE void nextMonth();
     Q_INVOKABLE void prevMonth();
     Q_INVOKABLE void goToToday();
-    Q_INVOKABLE QVariantList getDaysForMonth(int year, int month);
+    static Q_INVOKABLE QVariantList getDaysForMonth(int year, int month);
 
     signals:
 

@@ -2,6 +2,7 @@
 #include <QTimer>
 #include <QList>
 #include <QVariantList>
+#include <QProcess>
 
 struct WifiNetwork {
     QString ssid;
@@ -26,7 +27,7 @@ public:
     bool isScanning() const;
 
     Q_INVOKABLE void togglePopup();
-    Q_INVOKABLE void openPopup();
+    static Q_INVOKABLE void openPopup();
     Q_INVOKABLE void scan();
     Q_INVOKABLE void connectTo(const QString &ssid, const QString &password = "");
     Q_INVOKABLE void disconnect();
@@ -42,10 +43,12 @@ private slots:
     void updateWifi();
 
 private:
+    QProcess *m_scanProc = nullptr;
     QTimer *m_timer;
     QString m_ssid;
     int m_signalStrength = 0;
     bool m_isConnected = false;
     bool m_isScanning = false;
     QVariantList m_networks;
+    QProcess *m_proc = nullptr;
 };
