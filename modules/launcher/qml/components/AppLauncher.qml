@@ -8,7 +8,7 @@ Item {
         id: background
         anchors.fill: parent
         radius: 16
-        color: Qt.rgba(0.71, 0.91, 0.69, 0.08)
+        color: Qt.rgba(0.22, 0.35, 0.24, 0.5)
         border.color: Qt.rgba(0.71, 0.91, 0.69, 0.2)
         border.width: 1
 

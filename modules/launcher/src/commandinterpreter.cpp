@@ -23,10 +23,11 @@ void CommandInterpreter::execute(const QString &input) {
     else if (cmd == "find") handleFind(args);
     else if (cmd == "create") handleCreate(args);
     else if (cmd == "help" || cmd == "?" || cmd == "list") {
-        emit resultText("Commands List:\n"
-                        "  • volume or vol <0-100> : Set audio volume\n"
-                        "  • brightness or br <0-100> : Set screen brightness\n"
-                        "  • find : find file or folder\n"
+        emit resultText("Commands List: <br>"
+                        "  • volume or vol <0-100> : Set audio volume <br>"
+                        "  • brightness or br <0-100> : Set screen brightness <br>"
+                        "  • find : find file or folder <br>"
+                        "  • create : create file or folder <br>"
                         "  • help / ? : Show this command list");
     }
     else emit resultText("Unknown command: " + cmd + ". Type 'help' or '?' for commands list");
@@ -140,47 +141,62 @@ void CommandInterpreter::handleFind(const QStringList &args) {
 
 void CommandInterpreter::handleCreate(const QStringList &args) {
     if (args.isEmpty()) {
-        emit resultText("Usage: create <path/to/name> (e.g., create Project/src or create note.txt)");
+        emit resultText("💡 Usage: create <path1> [path2...] (e.g., create Project/src/main.cpp Project/docs/ README.md)");
         return;
     }
 
     QDir home(QDir::homePath());
-    const QString &targetInput = args[0];
+    int successCount = 0;
+    int failCount = 0;
+    QStringList createdItems;
 
-    QString absolutePath = home.absoluteFilePath(targetInput);
-    QFileInfo fileInfo(absolutePath);
+    for (const QString &rawInput : args) {
+        QString targetInput = QDir::cleanPath(rawInput);
+        QString absolutePath = home.absoluteFilePath(targetInput);
 
-    if (targetInput.contains(".")) {
-        QDir parentDir = fileInfo.dir();
-        if (!parentDir.exists()) {
-            (void) parentDir.mkpath(".");
-        }
+        bool isFolder = rawInput.endsWith("/") || rawInput.endsWith("\\");
+        QFileInfo fileInfo(absolutePath);
 
-        QFile file(absolutePath);
-        if (file.exists()) {
-            emit resultText("⚠File already exists: " + targetInput);
-            return;
-        }
-
-        if (file.open(QIODevice::WriteOnly)) {
-            file.close();
-            emit resultText("📄File created successfully: " + targetInput);
+        if (isFolder) {
+            QDir dir(absolutePath);
+            if (dir.exists()) {
+                continue;
+            }
+            if (home.mkpath(targetInput)) {
+                successCount++;
+                createdItems << ("📁 " + targetInput + "/");
+            } else {
+                failCount++;
+            }
         } else {
-            emit resultText("❌ Failed to create file: " + targetInput);
+            QDir parentDir = fileInfo.dir();
+            if (!parentDir.exists()) {
+                home.mkpath(parentDir.path());
+            }
+
+            QFile file(absolutePath);
+            if (file.exists()) {
+                continue;
+            }
+
+            if (file.open(QIODevice::WriteOnly)) {
+                file.close();
+                successCount++;
+                createdItems << ("📄 " + targetInput);
+            } else {
+                failCount++;
+            }
         }
+    }
+
+    if (successCount > 0) {
+        QString summary = QString("✅ Successfully created %1 item(s):\n").arg(successCount) + createdItems.join("\n");
+        if (failCount > 0) {
+            summary += QString("\n⚠️ Skipped or failed: %1 item(s)").arg(failCount);
+        }
+        emit resultText(summary);
     } else {
-        // --- XỬ LÝ TẠO FOLDER ---
-        QDir dir(absolutePath);
-        if (dir.exists()) {
-            emit resultText("⚠️ Folder already exists: " + targetInput);
-            return;
-        }
-
-        if (home.mkpath(targetInput)) {
-            emit resultText("📁 Folder created successfully: " + targetInput);
-        } else {
-            emit resultText("❌ Failed to create folder: " + targetInput);
-        }
+        emit resultText("⚠️ No new files or folders created (they might already exist or paths are invalid).");
     }
 }
 
