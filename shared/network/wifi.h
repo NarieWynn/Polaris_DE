@@ -20,11 +20,11 @@ class WifiManager : public QObject {
 
 public:
     explicit WifiManager(QObject *parent = nullptr);
-    QString ssid() const;
-    int signalStrength() const;
-    bool isConnected() const;
-    QVariantList networks() const;
-    bool isScanning() const;
+    [[nodiscard]] QString ssid() const;
+    [[nodiscard]] int signalStrength() const;
+    [[nodiscard]] bool isConnected() const;
+    [[nodiscard]] QVariantList networks() const;
+    [[nodiscard]] bool isScanning() const;
 
     Q_INVOKABLE void togglePopup();
     static Q_INVOKABLE void openPopup();

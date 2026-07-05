@@ -10,11 +10,9 @@ WifiManager::WifiManager(QObject *parent) : QObject(parent) {
 }
 
 void WifiManager::updateWifi() {
-    // 1. Chỉ tạo m_proc duy nhất 1 lần (nếu chưa có)
     if (!m_proc) {
         m_proc = new QProcess(this);
 
-        // 2. Chỉ kết nối tín hiệu 1 lần duy nhất lúc khởi tạo
         connect(m_proc, &QProcess::finished, this, [this](int exitCode) {
             if (exitCode != 0) return;
 
@@ -23,8 +21,8 @@ void WifiManager::updateWifi() {
 
             for (const QString &line : output.split('\n')) {
                 if (line.startsWith("yes:")) {
-                    int lastColon = line.lastIndexOf(':');
-                    int firstColon = line.indexOf(':');
+                    qsizetype lastColon = line.lastIndexOf(':');
+                    qsizetype firstColon = line.indexOf(':');
                     if (lastColon > firstColon) {
                         m_isConnected = true;
                         m_ssid = line.mid(firstColon + 1, lastColon - firstColon - 1);
@@ -43,10 +41,8 @@ void WifiManager::updateWifi() {
             emit wifiChanged();
         });
     }
-
-    // 3. Mỗi lần gọi updateWifi, chỉ cần gọi start thôi (nếu đang chạy thì nó tự restart lại hoặc mày gọi m_proc->kill() trước nếu muốn)
     if (m_proc->state() == QProcess::Running) {
-        m_proc->kill(); // Dừng lệnh cũ nếu nó đang chạy dở
+        m_proc->kill();
     }
     m_proc->start("nmcli", {"-t", "-f", "active,ssid,signal", "dev", "wifi"});
 }
@@ -78,8 +74,8 @@ void WifiManager::scan() {
             QMap<QString, QVariantMap> bestNetwork;
             for (const QString &line : output.split('\n')) {
                 if (line.trimmed().isEmpty()) continue;
-                int lastColon = line.lastIndexOf(':');
-                int secondLastColon = line.lastIndexOf(':', lastColon - 1);
+                qsizetype lastColon = line.lastIndexOf(':');
+                qsizetype secondLastColon = line.lastIndexOf(':', lastColon - 1);
                 if (secondLastColon < 0) continue;
 
                 QString ssid = line.left(secondLastColon);

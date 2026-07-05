@@ -8,9 +8,10 @@ Item {
         id: background
         anchors.fill: parent
         radius: 16
-        color: Qt.rgba(1, 1, 1, 0.08)
-        border.color: Qt.rgba(1, 1, 1, 0.15)
+        color: Qt.rgba(0.71, 0.91, 0.69, 0.08)
+        border.color: Qt.rgba(0.71, 0.91, 0.69, 0.2)
         border.width: 1
+
         layer.enabled: true
         layer.effect: MultiEffect {
             blurEnabled: true
@@ -32,7 +33,7 @@ Item {
             height: 48
             radius: 10
             color: mouseArea.containsMouse
-                ? Qt.rgba(1, 1, 1, 0.12)
+                ? Qt.rgba(0.71, 0.91, 0.69, 0.15)
                 : "transparent"
 
             Behavior on color {
@@ -49,12 +50,12 @@ Item {
                     width: 32
                     height: 32
                     radius: 8
-                    color: Qt.rgba(1, 1, 1, 0.15)
+                    color: Qt.rgba(0.71, 0.91, 0.69, 0.2)
 
                     Text {
                         anchors.centerIn: parent
                         text: name.charAt(0).toUpperCase()
-                        color: "white"
+                        color: "#b5e8b0"
                         font.pixelSize: 16
                         font.bold: true
                     }

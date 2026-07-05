@@ -14,6 +14,8 @@ qt_add_executable(polaris_launcher
         src/main.cpp
         src/appmodel.cpp
         src/appmodel.h
+        src/commandinterpreter.h
+        src/commandinterpreter.cpp
 )
 
 qt_add_qml_module(polaris_launcher
