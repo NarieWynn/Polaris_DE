@@ -3,12 +3,12 @@ import QtQuick.Controls
 import "components"
 
 Window {
-    id: root
+    id: wifiPopupWindow
     width: 240
     height: 300
     visible: false
-    title: "wifi_popup"
     color: "transparent"
+    title: "wifi_popup"
 
     Rectangle {
         anchors.fill: parent
@@ -17,14 +17,10 @@ Window {
         border.color: Qt.rgba(1, 1, 1, 0.1)
         border.width: 1
 
-        WifiList {
+        WifiPopup {
             anchors.fill: parent
             anchors.margins: 8
+            onClose: wifiPopupWindow.visible = false
         }
-    }
-
-    Shortcut {
-        sequence: "Escape"
-        onActivated: Qt.quit()
     }
 }

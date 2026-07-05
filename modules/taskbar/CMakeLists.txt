@@ -32,6 +32,8 @@ qt_add_qml_module(polaris_taskbar
         qml/components/DateDisplay.qml
         qml/components/WorkspaceIndicator.qml
         qml/components/WifiIndicator.qml
+        qml/components/WifiPopup.qml
+        qml/WifiPopupWindow.qml
 )
 
 target_link_libraries(polaris_taskbar PRIVATE

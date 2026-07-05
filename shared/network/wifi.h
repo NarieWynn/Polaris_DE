@@ -25,16 +25,18 @@ public:
     QVariantList networks() const;
     bool isScanning() const;
 
+    Q_INVOKABLE void togglePopup();
     Q_INVOKABLE void openPopup();
     Q_INVOKABLE void scan();
     Q_INVOKABLE void connectTo(const QString &ssid, const QString &password = "");
     Q_INVOKABLE void disconnect();
 
     signals:
-        void wifiChanged();
+    void wifiChanged();
     void networksChanged();
     void scanningChanged();
     void connectError(const QString &message);
+    void popupToggled();
 
 private slots:
     void updateWifi();

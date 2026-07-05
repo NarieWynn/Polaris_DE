@@ -6,7 +6,7 @@ Rectangle {
     height: parent ? parent.height : 0
     color: Qt.rgba(0.71, 0.91, 0.69, 0.7)
     radius: 10
-
+        signal togglePopup
     Row {
         id: wifiRow
         spacing: 4
@@ -31,6 +31,6 @@ Rectangle {
     }
     MouseArea {
         anchors.fill: parent
-        onClicked: sysWifi.openPopup()
+        onClicked: sysWifi.togglePopup()
     }
 }

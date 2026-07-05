@@ -161,6 +161,10 @@ void WifiManager::disconnect() {
     scan();
 }
 
+void WifiManager::togglePopup() {
+    emit popupToggled();
+}
+
 QString WifiManager::ssid() const { return m_ssid; }
 int WifiManager::signalStrength() const { return m_signalStrength; }
 bool WifiManager::isConnected() const { return m_isConnected; }

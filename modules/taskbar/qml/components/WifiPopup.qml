@@ -6,6 +6,8 @@ Item {
     width: 240
     height: childrenRect.height
 
+        signal close
+
     property string pendingSsid: ""
     property bool showPassword: false
 
@@ -15,11 +17,8 @@ Item {
         repeat: true
         running: root.visible
 
-        onTriggered: {
-            sysWifi.scan()
-        }
+        onTriggered: sysWifi.scan()
     }
-
 
     Column {
         id: mainColumn
@@ -54,7 +53,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: Window.window.visible = false
+                    onClicked: root.close()
                 }
             }
         }
@@ -149,7 +148,7 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: Window.window.visible = false
+                    onClicked: root.close()
                 }
             }
         }
