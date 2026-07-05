@@ -4,8 +4,24 @@ Rectangle {
     id: root
     width: clockColumn.width + 16
     height: parent ? parent.height : 0
-    color: Qt.rgba(0.71, 0.91, 0.69, 0.7)
+
+    color: clockMouseArea.containsMouse ? Qt.rgba(0.81, 1.0, 0.79, 0.85) : Qt.rgba(0.71, 0.91, 0.69, 0.7)
     radius: 10
+
+    Behavior on color {
+        ColorAnimation { duration: 150 }
+    }
+
+    MouseArea {
+        id: clockMouseArea
+        anchors.fill: parent
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+
+        onClicked: {
+            sysCalendar.togglePopup()
+        }
+    }
 
     Row {
         id: clockColumn

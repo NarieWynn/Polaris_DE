@@ -18,8 +18,8 @@ qt_add_executable(polaris_taskbar
         src/battery.cpp
         src/workspace.h
         src/workspace.cpp
-        ../../shared/network/wifi.h
-        ../../shared/network/wifi.cpp
+        src/calendar.h
+        src/calendar.cpp
 )
 
 qt_add_qml_module(polaris_taskbar
@@ -27,13 +27,15 @@ qt_add_qml_module(polaris_taskbar
         VERSION 1.0
         QML_FILES
         qml/main.qml
+        qml/WifiPopupWindow.qml
+        qml/CalendarPopupWindow.qml
         qml/components/Clock.qml
         qml/components/Battery.qml
         qml/components/DateDisplay.qml
         qml/components/WorkspaceIndicator.qml
         qml/components/WifiIndicator.qml
         qml/components/WifiPopup.qml
-        qml/WifiPopupWindow.qml
+        qml/components/CalendarView.qml
 )
 
 target_link_libraries(polaris_taskbar PRIVATE

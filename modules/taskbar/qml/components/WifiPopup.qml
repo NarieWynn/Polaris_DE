@@ -45,14 +45,25 @@ Item {
                 anchors.verticalCenter: parent.verticalCenter
             }
 
-            Text {
-                text: "✕"
-                color: Qt.rgba(1, 1, 1, 0.6)
-                font.pixelSize: 16
+            Rectangle {
+                width: 26; height: 26
+                radius: 6
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+                color: closeWifiMouse.containsMouse ? "#f38ba8" : "transparent"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "✕"
+                    color: closeWifiMouse.containsMouse ? "#11111b" : Qt.rgba(1, 1, 1, 0.6)
+                    font.pixelSize: 14
+                    font.bold: true
+                }
+
                 MouseArea {
+                    id: closeWifiMouse
                     anchors.fill: parent
+                    hoverEnabled: true
                     onClicked: root.close()
                 }
             }
@@ -140,14 +151,26 @@ Item {
                 }
             }
 
-            Text {
-                text: "✕"
-                color: Qt.rgba(1, 1, 1, 0.6)
-                font.pixelSize: 16
+            Rectangle {
+                width: 26; height: 26
+                radius: 6
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
+
+                color: closeWifiMouse.containsMouse ? "#f38ba8" : "transparent"
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "✕"
+                    color: closeWifiMouse.containsMouse ? "#11111b" : Qt.rgba(1, 1, 1, 0.6)
+                    font.pixelSize: 14
+                    font.bold: true
+                }
+
                 MouseArea {
+                    id: closePassWifiMouse
                     anchors.fill: parent
+                    hoverEnabled: true
                     onClicked: root.close()
                 }
             }
