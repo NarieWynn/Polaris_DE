@@ -20,7 +20,7 @@ Polaris is split into independent executables — each module is a separate proc
 |--------|-------------|
 | `polaris_launcher` | App launcher with fuzzy search and built-in command interpreter |
 | `polaris_taskbar` | System tray bar pinned to screen via Wayland layer-shell |
-| `polaris_settings` | Settings panel (WIP) |
+| `polaris_settings` | Settings panel with MVP core, Sandbox isolation, and dynamic Update Manager |
 
 ---
 
@@ -31,56 +31,74 @@ Polaris is split into independent executables — each module is a separate proc
 - Real-time search/filter via `QSortFilterProxyModel`
 - Launches apps via `QProcess`
 - **Built-in Command Interpreter** — custom shell commands:
-    - `volume <0-100>` — set audio volume via PipeWire/PulseAudio
-    - `brightness <0-100>` — set screen brightness via brightnessctl
-    - `find <term>` — fast file search via `fd`
-    - `create <path>` — create files/folders directly from launcher
-    - `help` — list all available commands
+  - `volume <0-100>` — set audio volume via PipeWire/PulseAudio
+  - `brightness <0-100>` — set screen brightness via brightnessctl
+  - `find <term>` — fast file search via `fd`
+  - `create <path>` — create files/folders directly from launcher
+  - `help` — list all available commands
 
 ### Taskbar
 - Pinned to screen edge via **Wayland layer-shell protocol** (LayerShellQt)
 - Real-time system info:
-    - Clock & Date — updates every minute
-    - Battery — reads from `/sys/class/power_supply/`
-    - Wifi — NetworkManager integration via `nmcli`
-    - Workspace Indicator — real-time Hyprland IPC via socket
+  - Clock & Date — updates every minute
+  - Battery — reads from `/sys/class/power_supply/`
+  - Wifi — NetworkManager integration via `nmcli`
+  - Workspace Indicator — real-time Hyprland IPC via socket
 - **Wifi Popup Window** — scan nearby networks, connect/disconnect, password input
+
+### Settings (New!)
+- **Dynamic Scrollable Navigation** — built with a `Flickable` viewport and Qt6 vertical scrollbar integration to support 11+ system modules without vertical window overflow.
+- **MVP Agile Architecture** — prioritized production core supporting immediate system needs (`Wi-Fi`, `Bluetooth`, `Sound`, `Display`, and `About`), while utilizing a modular `ComingSoon` fallback view with breathing icon animations for advanced tabs under development.
+- **Application & File Isolation (Sandbox)**:
+  - Interfaces with Linux containment engines (`firejail` / `bubblewrap`) to isolate high-risk applications (e.g., Web Browsers, P2P Clients).
+  - **Dynamic App Rules**: Custom `ListModel` allowing real-time permission toggles and custom process addition via an interactive modal popup (`TextField` with native placeholder support).
+  - **Untrusted Binaries Injection**: Dedicated path testing arena allowing execution of unverified scripts or dangerous binaries (e.g., `rm -rf /` sandbox testing) without host machine compromise.
+- **Smart System Update Manager**:
+  - 3-tier reactive state engine (`idle` -> `checking` -> `available`) with smooth Nerd Font rotation animations (`󰑐`).
+  - Synchronizes both upstream OS repositories (`CachyOS` / `Arch Linux` via `pacman -Sy`) and custom Polaris DE modules simultaneously.
+  - Triggers native system authorization (`pkexec` / `sudo pacman -Syu`) upon user confirmation.
+- **Support & Monetization Integration** — built-in glassmorphism modal popup displaying localized payment QR codes to support open-source development and free knowledge creation.
 
 ---
 
 ## Architecture
 
 Polaris follows a strict **C++ Backend / QML Frontend** separation:
+
 ```
 ┌─────────────────────────────────────────────┐
-│                  QML Layer                   │
-│   (UI, animations, layout, user interaction) │
-│                                              │
+│                  QML Layer                  │
+│   (UI, animations, layout, user interaction)│
+│                                             │
 │  main.qml → components/*.qml                │
 └──────────────────┬──────────────────────────┘
 │  Q_PROPERTY (data binding)
 │  Q_INVOKABLE (method calls)
 │  Signals/Slots
 ┌──────────────────┴──────────────────────────┐
-│               C++ Backend Layer              │
-│   (system data, business logic, APIs)        │
-│                                              │
-│  AppModel      → reads .desktop files        │
-│  BatteryManager→ reads /sys/class/           │
-│  WifiManager   → calls nmcli                 │
-│  ClockManager  → QDateTime + QTimer          │
-│  WorkspaceManager → Hyprland IPC socket      │
-│  CommandInterpreter → custom shell commands  │
+│               C++ Backend Layer             │
+│   (system data, business logic, APIs)       │
+│                                             │
+│  AppModel       → reads .desktop files      │
+│  BatteryManager → reads /sys/class/         │
+│  WifiManager    → calls nmcli               │
+│  ClockManager   → QDateTime + QTimer        │
+│  WorkspaceManager → Hyprland IPC socket     │
+│  CommandInterpreter → custom shell commands │
+│  SandboxEngine  → calls firejail / bwrap    │
+│  UpdateManager  → calls pacman / paru       │
 └──────────────────┬──────────────────────────┘
 │
 ┌──────────────────┴──────────────────────────┐
-│              System Layer                    │
-│                                              │
-│  Wayland / layer-shell protocol              │
-│  Linux sysfs (/sys/class/power_supply/)      │
-│  NetworkManager (nmcli)                      │
-│  Hyprland IPC ($XDG_RUNTIME_DIR/hypr/)       │
-│  PipeWire/PulseAudio (pactl)                 │
+│                 System Layer                │
+│                                             │
+│  Wayland / layer-shell protocol             │
+│  Linux sysfs (/sys/class/power_supply/)     │
+│  NetworkManager (nmcli)                     │
+│  Hyprland IPC ($XDG_RUNTIME_DIR/hypr/)      │
+│  PipeWire/PulseAudio (pactl)                │
+│  Containment Engines (firejail / bubblewrap)│
+│  Arch Package Manager (pacman / libalpm)    │
 └─────────────────────────────────────────────┘
 ```
 ### Key Design Decisions
@@ -126,7 +144,7 @@ faster execution.
 # Arch/CachyOS
 paru -S qt6-base qt6-declarative qt6-wayland layer-shell-qt mako fastfetch kitty
 # Optional
-paru -S brightnessctl fd
+paru -S brightnessctl fd firejail bubblewrap
 ```
 
 ### Build
@@ -149,6 +167,9 @@ mako &
 
 # Launcher (bind to a key in Hyprland)
 ./cmake-build-release/modules/launcher/polaris_launcher
+
+# Settings Panel
+./cmake-build-release/modules/settings/polaris_settings
 ```
 
 ---
@@ -183,7 +204,6 @@ Polaris/
 │   │   │   ├── battery.h/.cpp
 │   │   │   ├── calendar.h/.cpp
 │   │   │   └── workspace.h/.cpp
-│   │   │   
 │   │   └── qml/
 │   │       ├── main.qml
 │   │       ├── CalendarPopupWindow.qml
@@ -198,6 +218,16 @@ Polaris/
 │   │           └── WorkspaceIndicator.qml
 │   ├── settings/
 │   │   ├── CMakeLists.txt
+│   │   └── qml/
+│   │       ├── main.qml
+│   │       └── components/
+│   │           ├── WifiSettings.qml
+│   │           ├── BluetoothSettings.qml
+│   │           ├── SoundSettings.qml
+│   │           ├── DisplaySettings.qml
+│   │           ├── AboutSettings.qml
+│   │           ├── SandboxSettings.qml
+│   │           └── ComingSoon.qml
 │   ├── osd/
 │   │   ├── CMakeLists.txt
 │   │   ├── src/
@@ -223,8 +253,11 @@ Polaris/
 - [x] Wifi popup with connect/disconnect
 - [x] Notification daemon (mako)
 - [x] Volume/Brightness popup
-- [ ] Settings panel
 - [x] Dynamic theming from wallpaper
+- [x] Settings panel (MVP Core UI & Navigation)
+- [ ] Application Sandbox & Isolation UI
+- [ ] Smart Update Manager & Support UI
+- [ ] Settings panel C++ backend integration
 
 ---
 
