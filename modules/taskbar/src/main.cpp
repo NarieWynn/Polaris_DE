@@ -55,6 +55,7 @@ int main(int argc, char *argv[]) {
                     LayerShellQt::Window::AnchorRight
                 )
             );
+            layerWindow->setMargins(QMargins(0, 2, 0, 0));
             layerWindow->setExclusiveZone(25);
             layerWindow->setDesiredSize(QSize(0, 25));
             window->show();

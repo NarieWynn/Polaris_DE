@@ -5,7 +5,7 @@ import "components"
 Window {
     id: root
     width: Screen.width
-    height: 25
+    height: 40
     visible: false
     title: "taskbar"
     color: "transparent"
