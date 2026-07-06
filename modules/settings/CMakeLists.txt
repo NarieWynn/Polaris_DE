@@ -23,6 +23,15 @@ qt_add_qml_module(polaris_settings
         qml/components/WifiSettings.qml
         qml/components/SoundSettings.qml
         qml/components/DisplaySettings.qml
+        qml/components/AboutSettings.qml
+        qml/components/ShortcutsSettings.qml
+        qml/components/PowerSettings.qml
+        qml/components/BluetoothSettings.qml
+        qml/components/UsbSettings.qml
+        qml/components/SharingSettings.qml
+        qml/components/FirewallSettings.qml
+        qml/components/SandboxSettings.qml
+        qml/components/ComingSoon.qml
 )
 
 target_link_libraries(polaris_settings PRIVATE

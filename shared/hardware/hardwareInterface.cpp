@@ -70,9 +70,6 @@ void HardwareInterface::syncFromSystem() {
     } else {
         m_volume = 50;
     }
-
-    //std::cout << "🟢 [Polaris Backend] Synced OK -> Volume: " << m_volume
-              //<< "%, Brightness: " << m_brightness << "%" << std::endl;
 }
 
 void HardwareInterface::executeCommand(const char* program, char* const argv[]) {

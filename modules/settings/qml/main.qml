@@ -75,6 +75,7 @@ Window {
 
         // Divider
         Rectangle {
+            id: mainDivider
             anchors.top: titleBar.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -83,86 +84,98 @@ Window {
         }
 
         Row {
-            anchors.top: titleBar.bottom
+            anchors.top: mainDivider.bottom
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
-            anchors.topMargin: 1
 
-            // Sidebar
+            // Sidebar Container
             Rectangle {
                 width: parent.width * 0.28
                 height: parent.height
                 color: Qt.rgba(0, 0, 0, 0.3)
-                radius: 16
 
-                // Bo góc chỉ bên trái
-                Rectangle {
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.bottom: parent.bottom
-                    width: 16
-                    color: Qt.rgba(0, 0, 0, 0.3)
-                }
-
-                Column {
+                // 🌟 SỬ DỤNG FLICKABLE ĐỂ CHO PHÉP CUỘN DANH SÁCH TAB
+                Flickable {
+                    id: sidebarScroll
                     anchors.fill: parent
                     anchors.margins: 10
-                    spacing: 4
+                    contentHeight: sidebarColumn.height
+                    clip: true
 
-                    Repeater {
-                        model: [
-                            { id: "wifi",    label: "󰖩  Wi-Fi" },
-                            { id: "sound",   label: "󰕾  Sound" },
-                            { id: "display", label: "󰍹  Display" }
-                        ]
+                    // Ép vùng cuộn trả về khi kéo quá đà (bouncing effect) cho mượt
+                    boundsBehavior: Flickable.StopAtBounds
 
-                        Rectangle {
-                            width: parent.width
-                            height: 44
-                            radius: 10
-                            color: currentTab === modelData.id
-                                ? Qt.rgba(0.71, 0.91, 0.69, 0.15)
-                                : tabMouse.containsMouse
-                                    ? Qt.rgba(1, 1, 1, 0.05)
-                                    : "transparent"
+                    // 🌟 CÚ PHÁP CHUẨN ĐỂ ĐÍNH KÈM THANH CUỘN TRONG QT6:
+                    ScrollBar.vertical: ScrollBar {
+                        policy: ScrollBar.AsNeeded
+                        active: sidebarScroll.moving || sidebarScroll.flicking
+                    }
 
-                            // Indicator bar bên trái
+                    Column {
+                        id: sidebarColumn
+                        width: parent.width
+                        spacing: 4
+
+                        Repeater {
+                            model: [
+                                { id: "wifi",      label: "󰖩  Wi-Fi" },
+                                { id: "bluetooth", label: "󰂯  Bluetooth" },
+                                { id: "sound",     label: "󰕾  Sound" },
+                                { id: "display",   label: "󰍹  Display" },
+                                { id: "sharing",   label: "󰘖  Sharing" },
+                                { id: "security",  label: "󰒋  Security" },
+                                { id: "sandbox",   label: "󰏖  Sandbox" },
+                                { id: "usb",       label: "󱊞  USB & Disks" },
+                                { id: "power",     label: "󰓅  Power" },
+                                { id: "shortcuts", label: "󰌌  Shortcuts" },
+                                { id: "about",     label: "󰘚  About" }
+                            ]
+
                             Rectangle {
-                                visible: currentTab === modelData.id
-                                width: 3
-                                height: 20
-                                radius: 2
-                                color: "#b5e8b0"
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.left: parent.left
-                                anchors.leftMargin: 2
-                            }
-
-                            Text {
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.left: parent.left
-                                anchors.leftMargin: 16
-                                text: modelData.label
+                                width: parent.width
+                                height: 44
+                                radius: 10
                                 color: currentTab === modelData.id
-                                    ? "#b5e8b0"
-                                    : Qt.rgba(1, 1, 1, 0.6)
-                                font.pixelSize: 13
-                                font.family: "JetBrainsMono Nerd Font"
-                            }
+                                    ? Qt.rgba(0.71, 0.91, 0.69, 0.15)
+                                    : tabMouse.containsMouse
+                                        ? Qt.rgba(1, 1, 1, 0.05)
+                                        : "transparent"
 
-                            MouseArea {
-                                id: tabMouse
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                onClicked: currentTab = modelData.id
+                                Rectangle {
+                                    visible: currentTab === modelData.id
+                                    width: 3
+                                    height: 20
+                                    radius: 2
+                                    color: "#b5e8b0"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 2
+                                }
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 16
+                                    text: modelData.label
+                                    color: currentTab === modelData.id ? "#b5e8b0" : Qt.rgba(1, 1, 1, 0.6)
+                                    font.pixelSize: 13
+                                    font.family: "JetBrainsMono Nerd Font"
+                                }
+
+                                MouseArea {
+                                    id: tabMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    onClicked: currentTab = modelData.id
+                                }
                             }
                         }
                     }
                 }
             }
 
-            // Content
+            // Right Content Area
             Rectangle {
                 width: parent.width * 0.72
                 height: parent.height
@@ -171,9 +184,19 @@ Window {
                 Loader {
                     anchors.fill: parent
                     anchors.margins: 20
+
                     source: currentTab === "wifi" ? "components/WifiSettings.qml" :
-                            currentTab === "sound" ? "components/SoundSettings.qml" :
-                                currentTab === "display" ? "components/DisplaySettings.qml" : ""
+                            currentTab === "bluetooth" ? "components/BluetoothSettings.qml" :
+                                currentTab === "sound" ? "components/SoundSettings.qml" :
+                                    currentTab === "display" ? "components/DisplaySettings.qml" :
+                                        currentTab === "sharing" ? "components/SharingSettings.qml" :
+                                            currentTab === "security" ? "components/FirewallSettings.qml" :
+                                                currentTab === "sandbox" ? "components/SandboxSettings.qml" :
+                                                    currentTab === "usb" ? "components/UsbSettings.qml" :
+                                                        currentTab === "power" ? "components/PowerSettings.qml" :
+                                                            currentTab === "shortcuts" ? "components/ShortcutsSettings.qml" :
+                                                                currentTab === "about" ? "components/AboutSettings.qml" : ""
+                                                                    //"components/ComingSoon.qml"
                 }
             }
         }
