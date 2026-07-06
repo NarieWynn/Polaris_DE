@@ -12,7 +12,6 @@ qt_policy(SET QTP0004 NEW)
 
 qt_add_executable(polaris_settings
         src/main.cpp
-
 )
 
 qt_add_qml_module(polaris_settings
@@ -21,6 +20,9 @@ qt_add_qml_module(polaris_settings
         QML_FILES
         qml/main.qml
         qml/components/WifiButton.qml
+        qml/components/WifiSettings.qml
+        qml/components/SoundSettings.qml
+        qml/components/DisplaySettings.qml
 )
 
 target_link_libraries(polaris_settings PRIVATE
@@ -28,4 +30,5 @@ target_link_libraries(polaris_settings PRIVATE
         Qt6::Gui
         Qt6::Qml
         Qt6::Quick
+        polaris_shared
 )

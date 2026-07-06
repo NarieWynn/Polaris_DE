@@ -8,7 +8,7 @@ Item {
         id: background
         anchors.fill: parent
         radius: 16
-        color: Qt.rgba(1, 1, 1, 0.3)        // sáng hơn, 30% trắng
+        color: Qt.rgba(1, 1, 1, 0.3)
         border.color: Qt.rgba(1, 1, 1, 0.6)
         border.width: 1
 
@@ -29,7 +29,7 @@ Item {
         Text {
             anchors.verticalCenter: parent.verticalCenter
             text: "Wi-Fi"
-            color: "#333333"  // chữ tối trên nền sáng
+            color: "#333333"
             font.pixelSize: 15
         }
     }
