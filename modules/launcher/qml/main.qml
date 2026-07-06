@@ -20,6 +20,17 @@ Window {
 
     property bool commandMode: searchInput.text.startsWith(">")
 
+
+    //=================================================
+    // NORMAL VIEW
+    //=================================================
+    AppLauncher {
+        anchors.top: searchInput.bottom
+        width: parent.width
+        height: 400
+        visible: !root.commandMode
+    }
+
     //=================================================
     // SEARCH BAR
     //=================================================
@@ -33,17 +44,6 @@ Window {
             }
         }
     }
-
-    //=================================================
-    // NORMAL VIEW
-    //=================================================
-    AppLauncher {
-        anchors.top: searchInput.bottom
-        width: parent.width
-        height: 400
-        visible: !root.commandMode
-    }
-
     //=================================================
     // COMMAND VIEW
     //=================================================
