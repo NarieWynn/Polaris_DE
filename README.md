@@ -40,10 +40,10 @@ Polaris is split into independent executables — each module is a separate proc
 ### Taskbar
 - Pinned to screen edge via **Wayland layer-shell protocol** (LayerShellQt)
 - Real-time system info:
-    - 🕐 Clock & Date — updates every minute
-    - 🔋 Battery — reads from `/sys/class/power_supply/`
-    - 📶 Wifi — NetworkManager integration via `nmcli`
-    - 🖥️ Workspace Indicator — real-time Hyprland IPC via socket
+    - Clock & Date — updates every minute
+    - Battery — reads from `/sys/class/power_supply/`
+    - Wifi — NetworkManager integration via `nmcli`
+    - Workspace Indicator — real-time Hyprland IPC via socket
 - **Wifi Popup Window** — scan nearby networks, connect/disconnect, password input
 
 ---
@@ -124,21 +124,26 @@ faster execution.
 ### Dependencies
 ```bash
 # Arch/CachyOS
-paru -S qt6-base qt6-declarative qt6-wayland layer-shell-qt
+paru -S qt6-base qt6-declarative qt6-wayland layer-shell-qt mako fastfetch kitty
 # Optional
 paru -S brightnessctl fd
 ```
 
 ### Build
 ```bash
-git clone https://github.com/NarieWynn/Polaris_DE
+git clone [https://github.com/NarieWynn/Polaris_DE](https://github.com/NarieWynn/Polaris_DE)
 cd Polaris
 cmake -B cmake-build-release -DCMAKE_BUILD_TYPE=Release
 cmake --build cmake-build-release
 ```
-
+(Note: During the CMake configuration phase, embedded 
+deployment symbolic links will automatically link 
+Polaris's bundled dotfiles for Kitty and Fastfetch 
+into your ~/.config/ path if they do not already exist).
 ### Run
 ```bash
+# Start Notification Daemon
+mako &
 # Taskbar (add to Hyprland autostart)
 ./cmake-build-release/modules/taskbar/polaris_taskbar
 
@@ -150,6 +155,13 @@ cmake --build cmake-build-release
 
 ```
 Polaris/
+├── dotfiles/
+│  ├── kitty/
+│  │   └── kitty.conf 
+│  └── fastfetch/
+│      └── config.jsonc
+│  └── mako/
+│      └── config
 ├── modules/
 │   ├── launcher/
 │   │   ├── src/
@@ -190,7 +202,7 @@ Polaris/
 - [x] Battery, Clock, Wifi indicators
 - [x] Workspace indicator (Hyprland IPC)
 - [x] Wifi popup with connect/disconnect
-- [ ] Notification daemon
+- [x] Notification daemon (mako)
 - [ ] Volume/Brightness popup
 - [ ] Settings panel
 - [ ] Dynamic theming from wallpaper
