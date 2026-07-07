@@ -128,11 +128,10 @@ hl.bind("ALT + S", hl.dsp.exec_cmd("polaris_settings"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("polaris_wallpaper"))
 
 -- 4. OSD Keybinds
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+ ; polaris_osd --volume up"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ; polaris_osd --volume down"), { locked = true, repeating = true })
-
-hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+ ; polaris_osd --brightness up"), { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%- ; polaris_osd --brightness down"), { locked = true, repeating = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("polaris_osd --volume up"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("polaris_osd --volume down"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",  hl.dsp.exec_cmd("polaris_osd --brightness up"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown",hl.dsp.exec_cmd("polaris_osd --brightness down"), { locked = true, repeating = true })
 EOF
 
 echo "  ✓ Created $HYPR_CONFIG/modules/polaris.lua with correct syntax"
