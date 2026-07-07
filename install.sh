@@ -13,9 +13,18 @@ echo "╚═══════════════════════�
 echo ""
 
 # ─── 1. Dependencies ───────────────────────
-echo "▶ Installing dependencies..."
+echo "▶ Checking and installing dependencies..."
+
+HYPR_PKG="hyprland"
+
+if pacman -Sl cachyos &>/dev/null; then
+    HYPR_PKG="hyprland-cachyos"
+    echo "  -> CachyOS detected, switching to $HYPR_PKG for better performance"
+fi
+
 paru -S --needed --noconfirm \
     cmake \
+    $HYPR_PKG \
     qt6-base qt6-declarative qt6-wayland \
     layer-shell-qt qt6-5compat \
     mako kitty fastfetch \
