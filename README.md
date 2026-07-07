@@ -1,4 +1,4 @@
-````# Polaris Desktop Environment
+# Polaris Desktop Environment
 
 A lightweight Desktop Environment shell built from scratch with **C++23** and **Qt6/QML**,
 targeting **Hyprland/Wayland**. Polaris is designed as a daily-driver DE replacement
@@ -31,32 +31,32 @@ Polaris is split into independent executables — each module is a separate proc
 - Real-time search/filter via `QSortFilterProxyModel`
 - Launches apps via `QProcess`
 - **Built-in Command Interpreter** — custom shell commands:
-  - `volume <0-100>` — set audio volume via PipeWire/PulseAudio
-  - `brightness <0-100>` — set screen brightness via brightnessctl
-  - `find <term>` — fast file search via `fd`
-  - `create <path>` — create files/folders directly from launcher
-  - `help` — list all available commands
+    - `volume <0-100>` — set audio volume via PipeWire/PulseAudio
+    - `brightness <0-100>` — set screen brightness via brightnessctl
+    - `find <term>` — fast file search via `fd`
+    - `create <path>` — create files/folders directly from launcher
+    - `help` — list all available commands
 
 ### Taskbar
 - Pinned to screen edge via **Wayland layer-shell protocol** (LayerShellQt)
 - Real-time system info:
-  - Clock & Date — updates every minute
-  - Battery — reads from `/sys/class/power_supply/`
-  - Wifi — NetworkManager integration via `nmcli`
-  - Workspace Indicator — real-time Hyprland IPC via socket
+    - Clock & Date — updates every minute
+    - Battery — reads from `/sys/class/power_supply/`
+    - Wifi — NetworkManager integration via `nmcli`
+    - Workspace Indicator — real-time Hyprland IPC via socket
 - **Wifi Popup Window** — scan nearby networks, connect/disconnect, password input
 
 ### Settings (New!)
 - **Dynamic Scrollable Navigation** — built with a `Flickable` viewport and Qt6 vertical scrollbar integration to support 11+ system modules without vertical window overflow.
 - **MVP Agile Architecture** — prioritized production core supporting immediate system needs (`Wi-Fi`, `Bluetooth`, `Sound`, `Display`, and `About`), while utilizing a modular `ComingSoon` fallback view with breathing icon animations for advanced tabs under development.
 - **Application & File Isolation (Sandbox)**:
-  - Interfaces with Linux containment engines (`firejail` / `bubblewrap`) to isolate high-risk applications (e.g., Web Browsers, P2P Clients).
-  - **Dynamic App Rules**: Custom `ListModel` allowing real-time permission toggles and custom process addition via an interactive modal popup (`TextField` with native placeholder support).
-  - **Untrusted Binaries Injection**: Dedicated path testing arena allowing execution of unverified scripts or dangerous binaries (e.g., `rm -rf /` sandbox testing) without host machine compromise.
+    - Interfaces with Linux containment engines (`firejail` / `bubblewrap`) to isolate high-risk applications (e.g., Web Browsers, P2P Clients).
+    - **Dynamic App Rules**: Custom `ListModel` allowing real-time permission toggles and custom process addition via an interactive modal popup (`TextField` with native placeholder support).
+    - **Untrusted Binaries Injection**: Dedicated path testing arena allowing execution of unverified scripts or dangerous binaries (e.g., `rm -rf /` sandbox testing) without host machine compromise.
 - **Smart System Update Manager**:
-  - 3-tier reactive state engine (`idle` -> `checking` -> `available`) with smooth Nerd Font rotation animations (`󰑐`).
-  - Synchronizes both upstream OS repositories (`CachyOS` / `Arch Linux` via `pacman -Sy`) and custom Polaris DE modules simultaneously.
-  - Triggers native system authorization (`pkexec` / `sudo pacman -Syu`) upon user confirmation.
+    - 3-tier reactive state engine (`idle` -> `checking` -> `available`) with smooth Nerd Font rotation animations (`󰑐`).
+    - Synchronizes both upstream OS repositories (`CachyOS` / `Arch Linux` via `pacman -Sy`) and custom Polaris DE modules simultaneously.
+    - Triggers native system authorization (`pkexec` / `sudo pacman -Syu`) upon user confirmation.
 - **Support & Monetization Integration** — built-in glassmorphism modal popup displaying localized payment QR codes to support open-source development and free knowledge creation.
 
 ---
@@ -154,9 +154,9 @@ cd Polaris
 cmake -B cmake-build-release -DCMAKE_BUILD_TYPE=Release
 cmake --build cmake-build-release
 ```
-(Note: During the CMake configuration phase, embedded 
-deployment symbolic links will automatically link 
-Polaris's bundled dotfiles for Kitty and Fastfetch 
+(Note: During the CMake configuration phase, embedded
+deployment symbolic links will automatically link
+Polaris's bundled dotfiles for Kitty and Fastfetch
 into your ~/.config/ path if they do not already exist).
 ### Run
 ```bash
@@ -291,4 +291,3 @@ Polaris/
 ## Author
 
 **Huynh Ngoc Nguyen** — CS Student at HCMIU, VNU-HCM  
-````
