@@ -1,41 +1,35 @@
 import QtQuick
 
-Rectangle {
+Item {
     id: root
-    width: batteryRow.childrenRect.width + 16
-    height: parent ? parent.height : 0
-    color: Qt.rgba(0.71, 0.91, 0.69, 0.7)
-    radius: 10
+    implicitWidth: batteryRow.width
+    implicitHeight: batteryRow.height
 
     Row {
         id: batteryRow
-        spacing: 6
         anchors.centerIn: parent
+        spacing: 6
 
         Text {
-            id: batteryIcon
             font.family: "JetBrainsMono Nerd Font"
-            font.pixelSize: 16
+            font.pixelSize: 15
             font.bold: true
-            color: sysBattery.isCharging ? "#00FF7F" :
-                (sysBattery.batteryLevel <= 20 ? "#FF6347" : "#4a4a4a")
-
-
+            color: sysBattery.isCharging ? "#7CFFB2" :
+                (sysBattery.batteryLevel <= 20 ? "#FF6B6B" : Qt.rgba(1, 1, 1, 0.6))
             text: sysBattery.isCharging ? "󱐋" :
                 (sysBattery.batteryLevel >= 80 ? "󰁹" :
                         sysBattery.batteryLevel > 50 ? "󰁾" :
                             sysBattery.batteryLevel > 20 ? "󰁼" : "󰂎")
-
             anchors.verticalCenter: parent.verticalCenter
         }
 
         Text {
-            id: batteryText
             text: sysBattery.batteryLevel + "%"
-            color: sysBattery.isCharging ? "#00FF7F" :
-                (sysBattery.batteryLevel <= 20 ? "#FF6347" : "#4a4a4a")
-            font.pixelSize: 13
+            color: sysBattery.isCharging ? "#7CFFB2" :
+                (sysBattery.batteryLevel <= 20 ? "#FF6B6B" : "white")
+            font.pixelSize: 12
             font.bold: true
+            font.family: "JetBrainsMono Nerd Font"
             anchors.verticalCenter: parent.verticalCenter
         }
     }

@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
     engine.rootContext()->setContextProperty("sysHardware", &hardware);
     WifiManager wifi;
     engine.rootContext()->setContextProperty("sysWifi", &wifi);
+    
     const QUrl url(u"qrc:/qt/qml/polaris/qml/main.qml"_s);
     engine.load(url);
     return QGuiApplication::exec();

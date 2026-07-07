@@ -177,69 +177,96 @@ mako &
 ```
 Polaris/
 ├── CMakeLists.txt
-├── dotfiles/
-│  ├── kitty/
-│  │   └── kitty.conf 
-│  ├── fastfetch/
-│  │   └── config.jsonc
-│  └── mako/
-│      └── config
-├── modules/
-│   ├── launcher/
-│   │   ├── CMakeLists.txt
-│   │   ├── src/
-│   │   │   ├── main.cpp
-│   │   │   ├── appmodel.h/.cpp
-│   │   │   └── commandinterpreter.h/.cpp
-│   │   └── qml/
-│   │       ├── main.qml
-│   │       └── components/
-│   │           ├── AppLauncher.qml
-│   │           └── SearchBar.qml
-│   ├── taskbar/
-│   │   ├── CMakeLists.txt
-│   │   ├── src/
-│   │   │   ├── main.cpp
-│   │   │   ├── clock.h/.cpp
-│   │   │   ├── battery.h/.cpp
-│   │   │   ├── calendar.h/.cpp
-│   │   │   └── workspace.h/.cpp
-│   │   └── qml/
-│   │       ├── main.qml
-│   │       ├── CalendarPopupWindow.qml
-│   │       ├── WifiPopupWindow.qml
-│   │       └── components/
-│   │           ├── Clock.qml
-│   │           ├── Battery.qml
-│   │           ├── WifiIndicator.qml
-│   │           ├── WifiPopup.qml
-│   │           ├── CalendarView.qml
-│   │           ├── DateDisplay.qml
-│   │           └── WorkspaceIndicator.qml
-│   ├── settings/
-│   │   ├── CMakeLists.txt
-│   │   └── qml/
-│   │       ├── main.qml
-│   │       └── components/
-│   │           ├── WifiSettings.qml
-│   │           ├── BluetoothSettings.qml
-│   │           ├── SoundSettings.qml
-│   │           ├── DisplaySettings.qml
-│   │           ├── AboutSettings.qml
-│   │           ├── SandboxSettings.qml
-│   │           └── ComingSoon.qml
-│   ├── osd/
-│   │   ├── CMakeLists.txt
-│   │   ├── src/
-│   │   │   └── main.cpp
-│   │   └── qml/
-│   │       └── main.qml
-├── shared/
-│   ├── CMakeLists.txt
-│   ├── network/
-│   │   └── wifi.h/.cpp
-│   └── hardware/
-│       └── hardwareInterface.h/.cpp
+├── dotfiles
+│   ├── fastfetch
+│   │   └── config.jsonc
+│   ├── kitty
+│   │   └── kitty.conf
+│   └── mako
+│       └── config
+├── modules
+│   ├── launcher
+│   │   ├── CMakeLists.txt
+│   │   ├── qml
+│   │   │   ├── components
+│   │   │   │   ├── AppLauncher.qml
+│   │   │   │   └── SearchBar.qml
+│   │   │   └── main.qml
+│   │   └── src
+│   │       ├── appmodel.cpp
+│   │       ├── appmodel.h
+│   │       ├── commandinterpreter.cpp
+│   │       ├── commandinterpreter.h
+│   │       └── main.cpp
+│   ├── osd
+│   │   ├── CMakeLists.txt
+│   │   ├── qml
+│   │   │   └── main.qml
+│   │   └── src
+│   │       └── main.cpp
+│   ├── settings
+│   │   ├── CMakeLists.txt
+│   │   ├── qml
+│   │   │   ├── components
+│   │   │   │   ├── AboutSettings.qml
+│   │   │   │   ├── BluetoothSettings.qml
+│   │   │   │   ├── ComingSoon.qml
+│   │   │   │   ├── DisplaySettings.qml
+│   │   │   │   ├── FirewallSettings.qml
+│   │   │   │   ├── PowerSettings.qml
+│   │   │   │   ├── SandboxSettings.qml
+│   │   │   │   ├── SharingSettings.qml
+│   │   │   │   ├── ShortcutsSettings.qml
+│   │   │   │   ├── SoundSettings.qml
+│   │   │   │   ├── UsbSettings.qml
+│   │   │   │   ├── WifiButton.qml
+│   │   │   │   └── WifiSettings.qml
+│   │   │   └── main.qml
+│   │   └── src
+│   │       └── main.cpp
+│   ├── taskbar
+│   │   ├── CMakeLists.txt
+│   │   ├── qml
+│   │   │   ├── components
+│   │   │   │   ├── Battery.qml
+│   │   │   │   ├── CalendarView.qml
+│   │   │   │   ├── Clock.qml
+│   │   │   │   ├── DateDisplay.qml
+│   │   │   │   ├── WifiIndicator.qml
+│   │   │   │   ├── WifiPopup.qml
+│   │   │   │   └── WorkspaceIndicator.qml
+│   │   │   ├── main.qml
+│   │   │   ├── CalendarPopupWindow.qml
+│   │   │   └── WifiPopupWindow.qml
+│   │   └── src
+│   │       ├── battery.cpp
+│   │       ├── battery.h
+│   │       ├── calendar.cpp
+│   │       ├── calendar.h
+│   │       ├── clock.cpp
+│   │       ├── clock.h
+│   │       ├── main.cpp
+│   │       ├── workspace.cpp
+│   │       └── workspace.h
+│   └── wallpaper
+│       ├── CMakeLists.txt
+│       ├── qml
+│       │   └── main.qml
+│       └── src
+│           ├── main.cpp
+│           ├── wallpaperdaemon.cpp
+│           ├── wallpaperdaemon.h
+│           ├── wallpapermanager.cpp
+│           └── wallpapermanager.h
+├── README.md
+└── shared
+    ├── CMakeLists.txt
+    ├── hardware
+    │   ├── hardwareInterface.cpp
+    │   └── hardwareInterface.h
+    └── network
+        ├── wifi.cpp
+        └── wifi.h
 ```
 ---
 

@@ -12,14 +12,14 @@ Window {
 
     Rectangle {
         anchors.fill: parent
-        radius: 12
-        color: Qt.rgba(0, 0, 0, 0.85)
-        border.color: Qt.rgba(1, 1, 1, 0.1)
+        radius: 20
+        color: Qt.rgba(0.03, 0.05, 0.04, 0.94)
+        border.color: Qt.rgba(0.71, 0.91, 0.69, 0.18)
         border.width: 1
 
         WifiPopup {
             anchors.fill: parent
-            anchors.margins: 8
+            anchors.margins: 12
             onClose: wifiPopupWindow.visible = false
         }
     }

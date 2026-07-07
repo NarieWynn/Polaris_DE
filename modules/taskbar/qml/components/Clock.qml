@@ -1,15 +1,40 @@
 import QtQuick
 
-Rectangle {
+Item {
     id: root
-    width: clockColumn.width + 16
-    height: parent ? parent.height : 0
+    implicitWidth: clockRow.width
+    implicitHeight: clockRow.height
 
-    color: clockMouseArea.containsMouse ? Qt.rgba(0.81, 1.0, 0.79, 0.85) : Qt.rgba(0.71, 0.91, 0.69, 0.7)
-    radius: 10
+    Row {
+        id: clockRow
+        anchors.centerIn: parent
+        spacing: 6
 
-    Behavior on color {
-        ColorAnimation { duration: 150 }
+        Text {
+            text: sysClock.dateText
+            color: Qt.rgba(1, 1, 1, 0.5)
+            font.pixelSize: 12
+            font.family: "JetBrainsMono Nerd Font"
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Rectangle {
+            width: 1
+            height: 12
+            color: Qt.rgba(0.71, 0.91, 0.69, 0.25)
+            anchors.verticalCenter: parent.verticalCenter
+        }
+
+        Text {
+            text: sysClock.timeText
+            color: clockMouseArea.containsMouse ? "#b5e8b0" : "white"
+            font.pixelSize: 12
+            font.bold: true
+            font.family: "JetBrainsMono Nerd Font"
+            anchors.verticalCenter: parent.verticalCenter
+
+            Behavior on color { ColorAnimation { duration: 150 } }
+        }
     }
 
     MouseArea {
@@ -17,33 +42,6 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
-
-        onClicked: {
-            sysCalendar.togglePopup()
-        }
-    }
-
-    Row {
-        id: clockColumn
-        spacing: 4
-        anchors.centerIn: parent
-
-        Text {
-            id: dateTextDisplay
-            text: sysClock.dateText
-            color: "#2d5a27"
-            font.bold: true
-            font.pixelSize: 12
-            anchors.verticalCenter: parent.verticalCenter
-        }
-
-        Text {
-            id: timeTextDisplay
-            text: sysClock.timeText
-            color: "#2d5a27"
-            font.pixelSize: 12
-            font.bold: true
-            anchors.verticalCenter: parent.verticalCenter
-        }
+        onClicked: sysCalendar.togglePopup()
     }
 }

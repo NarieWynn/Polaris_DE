@@ -1,79 +1,108 @@
 import QtQuick
-import QtQuick.Controls
 import "components"
 
 Window {
     id: root
     width: Screen.width
-    height: 40
+    height: 44
     visible: false
     title: "taskbar"
     color: "transparent"
 
-    //left system tray
-    Rectangle {
-        anchors.left: parent.left
-        anchors.leftMargin: 8
-        anchors.verticalCenter: parent.verticalCenter
+    // floating
+    property int floatMargin: 2
+    property int pillHeight: 25
+    
+    component GlassPill: Rectangle {
+        radius: height / 2
+        color: Qt.rgba(0.03, 0.05, 0.04, 0.75)
+        border.color: Qt.rgba(0.71, 0.91, 0.69, 0.16)
+        border.width: 1
+    }
 
-        height: 25
-        width: leftSystemTray.childrenRect.width + 16
-        radius: 10
-        color: Qt.rgba(0, 0, 0, 0.6)
+    //=================================================
+    // LEFT: Workspace indicator
+    //=================================================
+    GlassPill {
+        anchors.left: parent.left
+        anchors.leftMargin: 12
+        anchors.top: parent.top
+        anchors.topMargin: root.floatMargin
+        height: root.pillHeight
+        width: leftSystemTray.childrenRect.width + 20
 
         Row {
             id: leftSystemTray
             anchors.centerIn: parent
+            spacing: 6
 
             WorkspaceIndicator {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
     }
-    //mid system tray
-    Rectangle {
-        anchors.horizontalCenter: parent.horizontalCenter
-        anchors.verticalCenter: parent.verticalCenter
 
-        height: 25
-        width: midSystemTray.childrenRect.width + 16
-        radius: 10
-        color: Qt.rgba(0, 0, 0, 0.6)
+    //=================================================
+    // MID: Clock
+    //=================================================
+    GlassPill {
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.top: parent.top
+        anchors.topMargin: root.floatMargin
+        height: root.pillHeight
+        width: midSystemTray.childrenRect.width + 24
 
         Row {
             id: midSystemTray
             anchors.centerIn: parent
             spacing: 8
 
+            Text {
+                text: "\uf017" // nf-fa-clock
+                color: "#b5e8b0"
+                font.pixelSize: 12
+                font.family: "JetBrainsMono Nerd Font"
+                anchors.verticalCenter: parent.verticalCenter
+            }
+
             Clock {
                 id: clockWidget
-                height: 23
+                height: root.pillHeight - 4
             }
         }
     }
-    //right system tray
-    Rectangle {
-        anchors.right: parent.right
-        anchors.rightMargin: 8
-        anchors.verticalCenter: parent.verticalCenter
 
-        height: 25
-        width: rightSystemTray.childrenRect.width + 16
-        radius: 10
-        color: Qt.rgba(0, 0, 0, 0.6)
+    //=================================================
+    // RIGHT: Wifi + Battery
+    //=================================================
+    GlassPill {
+        anchors.right: parent.right
+        anchors.rightMargin: 12
+        anchors.top: parent.top
+        anchors.topMargin: root.floatMargin
+        height: root.pillHeight
+        width: rightSystemTray.childrenRect.width + 20
 
         Row {
             id: rightSystemTray
-            spacing: 8
             anchors.centerIn: parent
+            spacing: 10
 
             WifiIndicator {
                 id: wifiWidget
-                height: 23
+                height: root.pillHeight - 4
             }
+
+            Rectangle {
+                width: 1
+                height: 14
+                anchors.verticalCenter: parent.verticalCenter
+                color: Qt.rgba(0.71, 0.91, 0.69, 0.15)
+            }
+
             Battery {
                 id: batteryWidget
-                height: 23
+                height: root.pillHeight - 4
             }
         }
     }

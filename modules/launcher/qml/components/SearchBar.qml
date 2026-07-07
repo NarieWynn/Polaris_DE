@@ -1,32 +1,35 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
 TextField {
     id: searchInput
+    Layout.fillWidth: true
+    Layout.preferredHeight: 36
 
-    width: parent.width - 64
-    height: 44
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.top: parent.top
-    anchors.topMargin: 16
-
-    color: Qt.rgba(0, 0, 0, 1)
-    font.bold: true
-    font.pixelSize: 14
+    color: "white"
+    font.pixelSize: 16
     font.family: "JetBrainsMono Nerd Font"
-    placeholderText: "🔍 Search or type > for terminal..."
-    placeholderTextColor: Qt.rgba(0, 0, 0, 0.4)
+    font.bold: false
 
-    leftPadding: 20
-    rightPadding: 20
+    placeholderText: "Search apps or type > for terminal..."
+    placeholderTextColor: Qt.rgba(1, 1, 1, 0.35)
+
+    leftPadding: 0
+    rightPadding: 0
+    topPadding: 0
+    bottomPadding: 0
     verticalAlignment: TextInput.AlignVCenter
-    
+
+    selectByMouse: true
+    selectionColor: Qt.rgba(0.71, 0.91, 0.69, 0.35)
+
+    cursorDelegate: Rectangle {
+        width: 2
+        color: "#b5e8b0"
+    }
+
     background: Rectangle {
-        width: parent.width
-        height: parent.height
-        radius: height / 2
-        color: Qt.rgba(255, 255, 255, 0.85)
-        border.color: Qt.rgba(255, 255, 255, 0.2)
-        border.width: 1
+        color: "transparent"
     }
 }

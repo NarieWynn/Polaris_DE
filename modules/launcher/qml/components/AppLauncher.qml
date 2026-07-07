@@ -1,24 +1,7 @@
 import QtQuick
-import QtQuick.Effects
 
 Item {
     id: root
-
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        radius: 16
-        color: "transparent"
-        border.color: Qt.rgba(0.71, 0.91, 0.69, 0.2)
-        border.width: 1
-
-        layer.enabled: true
-        layer.effect: MultiEffect {
-            blurEnabled: true
-            blur: 0.4
-            blurMax: 32
-        }
-    }
 
     ListView {
         id: listView
@@ -66,6 +49,7 @@ Item {
                     text: name
                     color: "white"
                     font.pixelSize: 15
+                    font.family: "JetBrainsMono Nerd Font"
                 }
             }
 
@@ -75,6 +59,16 @@ Item {
                 hoverEnabled: true
                 onClicked: appModelSource.launchApp(exec)
             }
+        }
+
+        // Empty state khi không tìm thấy app nào
+        Text {
+            anchors.centerIn: parent
+            visible: listView.count === 0
+            text: "No apps found"
+            color: Qt.rgba(1, 1, 1, 0.3)
+            font.pixelSize: 14
+            font.family: "JetBrainsMono Nerd Font"
         }
     }
 }

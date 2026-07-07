@@ -12,56 +12,101 @@ ColumnLayout {
 
         Text {
             text: "Month " + sysCalendar.currentMonth + ", " + sysCalendar.currentYear
-            color: "#ffffff"
-            font.pixelSize: 18
+            color: "white"
+            font.pixelSize: 16
             font.bold: true
+            font.family: "JetBrainsMono Nerd Font"
             Layout.fillWidth: true
         }
 
         Rectangle {
             width: 54; height: 26
-            radius: 6
-            color: todayMouse.containsMouse ? "#719169" : "#22ffffff"
-            border.color: todayMouse.containsMouse ? "transparent" : "#33ffffff"
+            radius: 8
+            color: todayMouse.containsMouse ? "#b5e8b0" : Qt.rgba(0.71, 0.91, 0.69, 0.12)
+            border.color: Qt.rgba(0.71, 0.91, 0.69, 0.25)
             border.width: 1
+
+            Behavior on color { ColorAnimation { duration: 150 } }
 
             Text {
                 anchors.centerIn: parent
                 text: "Today"
-                color: todayMouse.containsMouse ? "#0d120d" : "#ffffff"
+                color: todayMouse.containsMouse ? "#08130a" : "#b5e8b0"
                 font.pixelSize: 11
                 font.bold: true
+                font.family: "JetBrainsMono Nerd Font"
             }
             MouseArea {
                 id: todayMouse
                 anchors.fill: parent
                 hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
                 onClicked: sysCalendar.goToToday()
             }
         }
 
         Rectangle {
             width: 26; height: 26
-            radius: 6
-            color: prevMouse.containsMouse ? "#33ffffff" : "transparent"
-            Text { anchors.centerIn: parent; text: "❮"; color: "#ffffff"; font.pixelSize: 12 }
-            MouseArea { id: prevMouse; anchors.fill: parent; hoverEnabled: true; onClicked: sysCalendar.prevMonth() }
+            radius: 8
+            color: prevMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent"
+            Behavior on color { ColorAnimation { duration: 150 } }
+            Text {
+                anchors.centerIn: parent
+                text: "❮"
+                color: "white"
+                font.pixelSize: 12
+                font.family: "JetBrainsMono Nerd Font"
+            }
+            MouseArea {
+                id: prevMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: sysCalendar.prevMonth()
+            }
         }
 
         Rectangle {
             width: 26; height: 26
-            radius: 6
-            color: nextMouse.containsMouse ? "#33ffffff" : "transparent"
-            Text { anchors.centerIn: parent; text: "❯"; color: "#ffffff"; font.pixelSize: 12 }
-            MouseArea { id: nextMouse; anchors.fill: parent; hoverEnabled: true; onClicked: sysCalendar.nextMonth() }
+            radius: 8
+            color: nextMouse.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : "transparent"
+            Behavior on color { ColorAnimation { duration: 150 } }
+            Text {
+                anchors.centerIn: parent
+                text: "❯"
+                color: "white"
+                font.pixelSize: 12
+                font.family: "JetBrainsMono Nerd Font"
+            }
+            MouseArea {
+                id: nextMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: sysCalendar.nextMonth()
+            }
         }
 
         Rectangle {
             width: 26; height: 26
-            radius: 6
-            color: closeMouse.containsMouse ? "#f38ba8" : "transparent"
-            Text { anchors.centerIn: parent; text: "✕"; color: closeMouse.containsMouse ? "#11111b" : "#ffffff"; font.pixelSize: 14; font.bold: true }
-            MouseArea { id: closeMouse; anchors.fill: parent; hoverEnabled: true; onClicked: root.closeClicked() }
+            radius: 8
+            color: closeMouse.containsMouse ? "#FF6B6B" : "transparent"
+            Behavior on color { ColorAnimation { duration: 150 } }
+            Text {
+                anchors.centerIn: parent
+                text: "✕"
+                color: closeMouse.containsMouse ? "#1a0808" : Qt.rgba(1, 1, 1, 0.6)
+                font.pixelSize: 13
+                font.bold: true
+                font.family: "JetBrainsMono Nerd Font"
+            }
+            MouseArea {
+                id: closeMouse
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: root.closeClicked()
+            }
         }
     }
 
@@ -71,9 +116,10 @@ ColumnLayout {
             model: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
             delegate: Text {
                 text: modelData
-                color: "#98a696"
+                color: Qt.rgba(1, 1, 1, 0.4)
                 font.pixelSize: 12
                 font.bold: true
+                font.family: "JetBrainsMono Nerd Font"
                 horizontalAlignment: Text.AlignHCenter
                 Layout.fillWidth: true
             }
@@ -101,22 +147,28 @@ ColumnLayout {
                     height: width
                     radius: width / 2
 
-                    color: modelData.isToday ? "#719169" : (dayMouse.containsMouse ? "#22ffffff" : "transparent")
-                    border.color: modelData.isToday ? "#ffffff" : "transparent"
-                    border.width: modelData.isToday ? 1 : 0
+                    color: modelData.isToday
+                        ? "#b5e8b0"
+                        : (dayMouse.containsMouse ? Qt.rgba(0.71, 0.91, 0.69, 0.12) : "transparent")
+
+                    Behavior on color { ColorAnimation { duration: 150 } }
 
                     Text {
                         anchors.centerIn: parent
                         text: modelData.dayNumber
-                        font.pixelSize: 14
+                        font.pixelSize: 13
                         font.bold: true
-                        color: modelData.isToday ? "#0d120d" : (modelData.isCurrentMonth ? "#e6edf3" : "#6c7086")
+                        font.family: "JetBrainsMono Nerd Font"
+                        color: modelData.isToday
+                            ? "#08130a"
+                            : (modelData.isCurrentMonth ? "white" : Qt.rgba(1, 1, 1, 0.25))
                     }
 
                     MouseArea {
                         id: dayMouse
                         anchors.fill: parent
                         hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
                         onClicked: console.log("clicked: " + modelData.dateString)
                     }
                 }
