@@ -8,16 +8,15 @@ and a portfolio project demonstrating real-world Qt6 application development.
 
 ## Screenshots
 - taskbar
-![img_1.png](img_1.png)
+  ![](Screenshot/img_1.png)
 - dynamic wallpaper change
-![img_2.png](img_2.png)
+  ![](Screenshot/img_2.png)
 - launcher
-![img_3.png](img_3.png)
+  ![](Screenshot/img_3.png)
 - terminal launcher
-![img_4.png](img_4.png)
+  ![](Screenshot/img_4.png)
 - Setting panel
-![img_5.png](img_5.png)
----
+  ![](Screenshot/img_5.png)
 
 ## Modules
 
