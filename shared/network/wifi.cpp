@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <QCoreApplication>
 #include <QDir>
+
 WifiManager::WifiManager(QObject *parent) : QObject(parent) {
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &WifiManager::updateWifi);
@@ -52,6 +53,12 @@ WifiManager::WifiManager(QObject *parent) : QObject(parent) {
         QString output = m_scanProc->readAllStandardOutput();
         QMap<QString, QVariantMap> bestNetwork;
 
+        // Retrieve configured profiles to inject the isSaved boolean flag
+        QStringList savedSsidList;
+        for (const QVariant &item : getSavedNetworks()) {
+            savedSsidList.append(item.toMap()["ssid"].toString());
+        }
+
         for (const QString &line : output.split('\n')) {
             if (line.trimmed().isEmpty()) continue;
             qsizetype lastColon = line.lastIndexOf(':');
@@ -73,6 +80,7 @@ WifiManager::WifiManager(QObject *parent) : QObject(parent) {
                 network["signal"] = signal;
                 network["isConnected"] = isActive;
                 network["isProtected"] = isProtected;
+                network["isSaved"] = savedSsidList.contains(ssid);
                 bestNetwork[ssid] = network;
             }
         }
@@ -167,7 +175,6 @@ void WifiManager::setWifiEnabled(bool enabled) {
 bool WifiManager::isWifiEnabled() const { return m_isWifiEnabled; }
 
 void WifiManager::openPopup() {
-
     QString binPath = QCoreApplication::applicationDirPath();
     QDir dir(binPath);
     dir.cdUp();
@@ -193,13 +200,15 @@ void WifiManager::scan() {
 
 void WifiManager::connectTo(const QString &ssid, const QString &password) {
     if (m_connProc->state() == QProcess::Running) {
-        m_connProc->kill();
-        m_connProc->waitForFinished(100);
+        qDebug() << "Connection process is already running, please wait...";
+        return;
     }
     if (password.isEmpty()) {
-        m_connProc->start("nmcli", {"dev", "wifi", "connect", ssid});
+        qDebug() << "Activating saved connection profile for:" << ssid;
+        m_connProc->start("nmcli", {"connection", "up", "id", ssid});
     } else {
-        m_connProc->start("nmcli", {"dev", "wifi", "connect", ssid, "password", password});
+        qDebug() << "Connecting to new network with password:" << ssid;
+        m_connProc->start("nmcli", {"--wait", "10", "dev", "wifi", "connect", ssid, "password", password});
     }
 }
 

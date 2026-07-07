@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 
 Item {
     id: root
@@ -9,6 +10,21 @@ Item {
     property string pendingSsid: ""
     property bool showPasswordPopup: false
     property bool wifiEnabled: true
+
+    // AUTO-HEAL: Listen for connection errors from the backend.
+    // If a saved network fails due to missing secrets, forcefully show the password prompt.
+    Connections {
+        target: (typeof sysWifi !== "undefined" && sysWifi) ? sysWifi : null
+        function onConnectError(err) {
+            if (err.indexOf("Secrets were required") !== -1 || err.indexOf("psk") !== -1) {
+
+                if (typeof sysWifi !== "undefined") {
+                    sysWifi.forgetNetwork(root.pendingSsid);
+                }
+                root.showPasswordPopup = true; 
+            }
+        }
+    }
 
     Component.onCompleted: {
         // Initialize network scan upon component completion
@@ -64,14 +80,67 @@ Item {
         }
     }
 
+    // Tab Bar for switching between Available and Saved networks
+    TabBar {
+        id: wifiTabBar
+        width: parent.width
+        height: 36
+        anchors.top: headerArea.bottom
+        anchors.topMargin: 8
+        background: Rectangle { color: "transparent" }
+        // Automatically hide and fade out TabBar when hardware radio is disabled
+        visible: root.wifiEnabled
+        opacity: root.wifiEnabled ? 1.0 : 0.0
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+
+        onCurrentIndexChanged: {
+            // Synchronize saved network profile list whenever the Saved tab is selected
+            if (currentIndex === 1 && typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.getSavedNetworks === "function") {
+                savedListView.model = sysWifi.getSavedNetworks()
+            }
+        }
+
+        TabButton {
+            text: "Available"
+            font.family: "JetBrainsMono Nerd Font"
+            contentItem: Text {
+                text: parent.text
+                font: parent.font
+                color: parent.checked ? "#b5e8b0" : Qt.rgba(1, 1, 1, 0.5)
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            background: Rectangle {
+                color: parent.checked ? Qt.rgba(0.71, 0.91, 0.69, 0.1) : "transparent"
+                radius: 6
+            }
+        }
+
+        TabButton {
+            text: "Saved"
+            font.family: "JetBrainsMono Nerd Font"
+            contentItem: Text {
+                text: parent.text
+                font: parent.font
+                color: parent.checked ? "#b5e8b0" : Qt.rgba(1, 1, 1, 0.5)
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
+            background: Rectangle {
+                color: parent.checked ? Qt.rgba(0.71, 0.91, 0.69, 0.1) : "transparent"
+                radius: 6
+            }
+        }
+    }
+
     // Scanning indicator displayed only during initial acquisition
     Item {
         id: scanningIndicator
-        anchors.top: headerArea.bottom
+        anchors.top: wifiTabBar.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        visible: root.wifiEnabled && wifiListView.count === 0
+        visible: root.wifiEnabled && wifiListView.count === 0 && wifiTabBar.currentIndex === 0
 
         Column {
             anchors.centerIn: parent
@@ -103,120 +172,221 @@ Item {
         }
     }
 
-
-    // Network list view bound to backend model
-    ListView {
-        id: wifiListView
-        anchors.top: headerArea.bottom
+    // SwipeView managing fluid horizontal sliding between Available and Saved views
+    SwipeView {
+        id: viewStack
+        anchors.top: wifiTabBar.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.topMargin: 16
-        visible: root.wifiEnabled && wifiListView.count > 0
+        anchors.topMargin: 12
         clip: true
-        spacing: 8
+        currentIndex: wifiTabBar.currentIndex
+        onCurrentIndexChanged: wifiTabBar.currentIndex = currentIndex
+        // Disable interactive swipe to prevent dragging conflicts with vertical list scrolling
+        interactive: false
+        visible: root.wifiEnabled
+        opacity: root.wifiEnabled ? 1.0 : 0.0
+        Behavior on opacity { NumberAnimation { duration: 200 } }
 
-        model: (typeof sysWifi !== "undefined" && sysWifi && sysWifi.networks) ? sysWifi.networks : []
-
-        delegate: Rectangle {
-            id: itemRow
-            width: wifiListView.width
-            height: 52
-            radius: 10
-            color: mouseAreaItem.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(1, 1, 1, 0.03)
-            border.color: (modelData && modelData.isConnected) ? Qt.rgba(0.71, 0.91, 0.69, 0.2) : "transparent"
-            border.width: 1
-
-            MouseArea {
-                id: mouseAreaItem
+        // TAB 1: Available Networks
+        Item {
+            ListView {
+                id: wifiListView
                 anchors.fill: parent
-                hoverEnabled: true
-            }
+                // FIXED: Do NOT use explicit visible properties that override SwipeView visibility
+                clip: true
+                spacing: 8
 
-            Row {
-                anchors.fill: parent
-                anchors.leftMargin: 16
-                anchors.rightMargin: 16
-                spacing: 14
+                model: (typeof sysWifi !== "undefined" && sysWifi && sysWifi.networks) ? sysWifi.networks : []
 
-                Text {
-                    anchors.verticalCenter: parent.verticalCenter
-                    font.family: "JetBrainsMono Nerd Font"
-                    font.pixelSize: 16
-                    color: (modelData && modelData.isConnected) ? "#b5e8b0" : Qt.rgba(1, 1, 1, 0.6)
-                    text: {
-                        let strength = (modelData && typeof modelData.signalStrength !== "undefined") ? modelData.signalStrength : 100;
-                        if (strength >= 75) return "󰤨"
-                        if (strength >= 50) return "󰤥"
-                        if (strength >= 25) return "󰤢"
-                        return "󰤟"
-                    }
-                }
-
-                Row {
-                    width: parent.width - connectBtn.width - 40
-                    anchors.verticalCenter: parent.verticalCenter
-                    spacing: 8
-
-                    Text {
-                        text: modelData ? modelData.ssid : "Unknown Network"
-                        font.pixelSize: 13
-                        font.bold: modelData && modelData.isConnected
-                        font.family: "JetBrainsMono Nerd Font"
-                        color: (modelData && modelData.isConnected) ? "#b5e8b0" : "#FFFFFF"
-                        elide: Text.ElideRight
-                    }
-
-                    Text {
-                        text: "󰌾"
-                        font.family: "JetBrainsMono Nerd Font"
-                        font.pixelSize: 11
-                        color: Qt.rgba(1, 1, 1, 0.3)
-                        visible: modelData && typeof modelData.isProtected !== "undefined" && modelData.isProtected && !modelData.isConnected
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }
-
-                Rectangle {
-                    id: connectBtn
-                    width: (modelData && modelData.isConnected) ? 85 : 70
-                    height: 28
-                    radius: 6
-                    anchors.verticalCenter: parent.verticalCenter
-                    color: (modelData && modelData.isConnected)
-                        ? (btnMouseArea.containsMouse ? Qt.rgba(0.9, 0.3, 0.3, 0.3) : Qt.rgba(0.9, 0.3, 0.3, 0.15))
-                        : (btnMouseArea.containsMouse ? Qt.rgba(0.71, 0.91, 0.69, 0.3) : Qt.rgba(0.71, 0.91, 0.69, 0.12))
-                    border.color: (modelData && modelData.isConnected) ? Qt.rgba(1, 0.4, 0.4, 0.3) : Qt.rgba(0.71, 0.91, 0.69, 0.3)
+                delegate: Rectangle {
+                    id: itemRow
+                    width: ListView.view ? ListView.view.width : parent.width
+                    height: 52
+                    radius: 10
+                    color: mouseAreaItem.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(1, 1, 1, 0.03)
+                    border.color: (modelData && modelData.isConnected) ? Qt.rgba(0.71, 0.91, 0.69, 0.2) : "transparent"
                     border.width: 1
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: (modelData && modelData.isConnected) ? "Disconnect" : "Connect"
-                        color: (modelData && modelData.isConnected) ? "#ff8787" : "#b5e8b0"
-                        font.pixelSize: 11
-                        font.bold: true
-                        font.family: "JetBrainsMono Nerd Font"
-                    }
-
                     MouseArea {
-                        id: btnMouseArea
+                        id: mouseAreaItem
                         anchors.fill: parent
                         hoverEnabled: true
-                        onClicked: {
-                            if (!modelData) return;
+                    }
 
-                            if (modelData.isConnected) {
-                                if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.disconnect === "function") {
-                                    sysWifi.disconnect()
+                    Row {
+                        anchors.fill: parent
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
+                        spacing: 14
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 16
+                            color: (modelData && modelData.isConnected) ? "#b5e8b0" : Qt.rgba(1, 1, 1, 0.6)
+                            text: {
+                                let strength = (modelData && typeof modelData.signalStrength !== "undefined") ? modelData.signalStrength : 100;
+                                if (strength >= 75) return "󰤨"
+                                if (strength >= 50) return "󰤥"
+                                if (strength >= 25) return "󰤢"
+                                return "󰤟"
+                            }
+                        }
+
+                        Row {
+                            width: parent.width - connectBtn.width - 40
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 8
+
+                            Text {
+                                text: modelData ? modelData.ssid : "Unknown Network"
+                                font.pixelSize: 13
+                                font.bold: modelData && modelData.isConnected
+                                font.family: "JetBrainsMono Nerd Font"
+                                color: (modelData && modelData.isConnected) ? "#b5e8b0" : "#FFFFFF"
+                                elide: Text.ElideRight
+                            }
+
+                            Text {
+                                text: "󰌾"
+                                font.family: "JetBrainsMono Nerd Font"
+                                font.pixelSize: 11
+                                color: Qt.rgba(1, 1, 1, 0.3)
+                                visible: modelData && typeof modelData.isProtected !== "undefined" && modelData.isProtected && !modelData.isConnected
+                                anchors.verticalCenter: parent.verticalCenter
+                            }
+                        }
+
+                        Rectangle {
+                            id: connectBtn
+                            width: (modelData && modelData.isConnected) ? 85 : 70
+                            height: 28
+                            radius: 6
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: (modelData && modelData.isConnected)
+                                ? (btnMouseArea.containsMouse ? Qt.rgba(0.9, 0.3, 0.3, 0.3) : Qt.rgba(0.9, 0.3, 0.3, 0.15))
+                                : (btnMouseArea.containsMouse ? Qt.rgba(0.71, 0.91, 0.69, 0.3) : Qt.rgba(0.71, 0.91, 0.69, 0.12))
+                            border.color: (modelData && modelData.isConnected) ? Qt.rgba(1, 0.4, 0.4, 0.3) : Qt.rgba(0.71, 0.91, 0.69, 0.3)
+                            border.width: 1
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: (modelData && modelData.isConnected) ? "Disconnect" : "Connect"
+                                color: (modelData && modelData.isConnected) ? "#ff8787" : "#b5e8b0"
+                                font.pixelSize: 11
+                                font.bold: true
+                                font.family: "JetBrainsMono Nerd Font"
+                            }
+
+                            MouseArea {
+                                id: btnMouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    if (!modelData) return;
+
+                                    if (modelData.isConnected) {
+                                        if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.disconnect === "function") {
+                                            sysWifi.disconnect()
+                                        }
+                                    } else {
+                                        root.pendingSsid = modelData.ssid
+                                        // Connect directly if open OR already saved in system storage
+                                        if (modelData.isSaved || !modelData.isProtected) {
+                                            if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.connectTo === "function") {
+                                                sysWifi.connectTo(modelData.ssid, "")
+                                            }
+                                        } else {
+                                            root.showPasswordPopup = true
+                                        }
+                                    }
                                 }
-                            } else {
-                                root.pendingSsid = modelData.ssid
-                                let hasPass = typeof modelData.isProtected !== "undefined" ? modelData.isProtected : true;
-                                if (hasPass) {
-                                    root.showPasswordPopup = true
-                                } else {
-                                    if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.connectTo === "function") {
-                                        sysWifi.connectTo(modelData.ssid, "")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // TAB 2: Saved Networks
+        Item {
+            ListView {
+                id: savedListView
+                anchors.fill: parent
+                // FIXED: Removed redundant visible check that caused UI overlapping
+                clip: true
+                spacing: 8
+
+                model: (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.getSavedNetworks === "function") ? sysWifi.getSavedNetworks() : []
+
+                delegate: Rectangle {
+                    id: savedItemRow
+                    width: ListView.view ? ListView.view.width : parent.width
+                    height: 52
+                    radius: 10
+                    color: savedMouseArea.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(1, 1, 1, 0.03)
+                    border.color: "transparent"
+                    border.width: 1
+
+                    MouseArea {
+                        id: savedMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                    }
+
+                    Row {
+                        anchors.fill: parent
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
+                        spacing: 14
+
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            font.family: "JetBrainsMono Nerd Font"
+                            font.pixelSize: 16
+                            color: Qt.rgba(1, 1, 1, 0.6)
+                            text: "󰤨"
+                        }
+
+                        Text {
+                            width: parent.width - forgetBtn.width - 40
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: modelData ? modelData.ssid : "Unknown Network"
+                            font.pixelSize: 13
+                            font.family: "JetBrainsMono Nerd Font"
+                            color: "#FFFFFF"
+                            elide: Text.ElideRight
+                        }
+
+                        Rectangle {
+                            id: forgetBtn
+                            width: 70
+                            height: 28
+                            radius: 6
+                            anchors.verticalCenter: parent.verticalCenter
+                            color: forgetMouseArea.containsMouse ? Qt.rgba(0.9, 0.3, 0.3, 0.3) : Qt.rgba(0.9, 0.3, 0.3, 0.15)
+                            border.color: Qt.rgba(1, 0.4, 0.4, 0.3)
+                            border.width: 1
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "Forget"
+                                color: "#ff8787"
+                                font.pixelSize: 11
+                                font.bold: true
+                                font.family: "JetBrainsMono Nerd Font"
+                            }
+
+                            MouseArea {
+                                id: forgetMouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onClicked: {
+                                    if (modelData && typeof sysWifi !== "undefined" && typeof sysWifi.forgetNetwork === "function") {
+                                        sysWifi.forgetNetwork(modelData.ssid)
+                                        savedListView.model = sysWifi.getSavedNetworks()
                                     }
                                 }
                             }
