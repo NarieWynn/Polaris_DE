@@ -5,19 +5,19 @@ Item {
     id: root
     anchors.fill: parent
 
-    // --- BIẾN TẠM ĐỂ BINDING VÀ MOCKUP TEST UI ---
+    // Internal properties for state management
     property string pendingSsid: ""
     property bool showPasswordPopup: false
     property bool wifiEnabled: true
 
     Component.onCompleted: {
-        // Kiểm tra an toàn xem đối tượng C++ và hàm scan có tồn tại không trước khi gọi
+        // Initialize network scan upon component completion
         if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.scan === "function") {
             sysWifi.scan()
         }
     }
 
-    // --- 📡 TẦNG TIÊU ĐỀ & CÔNG TẮC TỔNG (ĐÃ FIX ROW ANCHORS) ---
+    // Header section containing the title and master radio toggle
     Item {
         id: headerArea
         width: parent.width
@@ -41,7 +41,12 @@ Item {
             anchors.right: parent.right
             anchors.verticalCenter: parent.verticalCenter
             checked: root.wifiEnabled
-            onCheckedChanged: root.wifiEnabled = checked
+            onCheckedChanged: {
+                root.wifiEnabled = checked
+                if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.setWifiEnabled === "function") {
+                    sysWifi.setWifiEnabled(checked)
+                }
+            }
 
             indicator: Rectangle {
                 implicitWidth: 38; implicitHeight: 20
@@ -59,7 +64,47 @@ Item {
         }
     }
 
-    // --- 📶 DANH SÁCH MẠNG WI-FI ---
+    // Scanning indicator displayed only during initial acquisition
+    Item {
+        id: scanningIndicator
+        anchors.top: headerArea.bottom
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
+        anchors.right: parent.right
+        visible: root.wifiEnabled && wifiListView.count === 0
+
+        Column {
+            anchors.centerIn: parent
+            spacing: 14
+
+            Text {
+                id: spinnerIcon
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "󰑐"
+                color: "#b5e8b0"
+                font.pixelSize: 28
+                font.family: "JetBrainsMono Nerd Font"
+
+                RotationAnimation on rotation {
+                    running: scanningIndicator.visible
+                    from: 0; to: 360
+                    loops: Animation.Infinite
+                    duration: 900
+                }
+            }
+
+            Text {
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Scanning available networks..."
+                color: Qt.rgba(1, 1, 1, 0.6)
+                font.pixelSize: 13
+                font.family: "JetBrainsMono Nerd Font"
+            }
+        }
+    }
+
+
+    // Network list view bound to backend model
     ListView {
         id: wifiListView
         anchors.top: headerArea.bottom
@@ -67,17 +112,11 @@ Item {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.topMargin: 16
-        visible: root.wifiEnabled
+        visible: root.wifiEnabled && wifiListView.count > 0
         clip: true
         spacing: 8
 
-        // Kiểm tra phòng thủ cực nghiêm ngặt tránh lỗi 'networks' of null
-        model: (typeof sysWifi !== "undefined" && sysWifi && sysWifi.networks) ? sysWifi.networks : [
-            { ssid: "Narie Room 404", isConnected: true,  isProtected: true,  signalStrength: 95 },
-            { ssid: "HCMIU_Student_HighSpeed", isConnected: false, isProtected: false, signalStrength: 80 },
-            { ssid: "Coffee Ong Bau", isConnected: false, isProtected: true,  signalStrength: 55 },
-            { ssid: "Com Tam Kieu Giang", isConnected: false, isProtected: true,  signalStrength: 30 }
-        ]
+        model: (typeof sysWifi !== "undefined" && sysWifi && sysWifi.networks) ? sysWifi.networks : []
 
         delegate: Rectangle {
             id: itemRow
@@ -133,7 +172,6 @@ Item {
                         font.family: "JetBrainsMono Nerd Font"
                         font.pixelSize: 11
                         color: Qt.rgba(1, 1, 1, 0.3)
-                        // 🌟 VÁ LỖI 2: Ép kiểu an toàn đề phòng C++ khạc ra undefined
                         visible: modelData && typeof modelData.isProtected !== "undefined" && modelData.isProtected && !modelData.isConnected
                         anchors.verticalCenter: parent.verticalCenter
                     }
@@ -177,8 +215,8 @@ Item {
                                 if (hasPass) {
                                     root.showPasswordPopup = true
                                 } else {
-                                    if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.connect === "function") {
-                                        sysWifi.connect(modelData.ssid, "")
+                                    if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.connectTo === "function") {
+                                        sysWifi.connectTo(modelData.ssid, "")
                                     }
                                 }
                             }
@@ -189,6 +227,7 @@ Item {
         }
     }
 
+    // Hardware interface status indicator
     Text {
         anchors.centerIn: parent
         visible: !root.wifiEnabled
@@ -198,6 +237,7 @@ Item {
         font.family: "JetBrainsMono Nerd Font"
     }
 
+    // Authentication modal
     Popup {
         id: passwordModal
         visible: root.showPasswordPopup
@@ -252,11 +292,8 @@ Item {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            // 🌟 VÁ LỖI 3: Kiểm tra phòng thủ, tránh nổ crash khi gọi hàm C++
-                            if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.connect === "function") {
-                                sysWifi.connect(root.pendingSsid, passInput.text)
-                            } else {
-                                console.log("Mockup call: Connecting to " + root.pendingSsid + " with pass: " + passInput.text)
+                            if (typeof sysWifi !== "undefined" && sysWifi && typeof sysWifi.connectTo === "function") {
+                                sysWifi.connectTo(root.pendingSsid, passInput.text)
                             }
                             passwordModal.close()
                         }
