@@ -9,6 +9,7 @@ and a portfolio project demonstrating real-world Qt6 application development.
 ## Screenshots
 - taskbar
   ![](Screenshot/img_1.png)
+
 - dynamic wallpaper change
   ![](Screenshot/img_2.png)
 - launcher
